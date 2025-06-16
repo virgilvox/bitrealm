@@ -9,6 +9,7 @@ export class InventoryItem extends Schema {
   }
 }
 
+// Define schema after class definition
 InventoryItem.defineSchema({
   slot: 'number',
   itemId: 'string',
@@ -41,6 +42,7 @@ export class Player extends Schema {
   }
 }
 
+// Define schema after class definition
 Player.defineSchema({
   id: 'string',
   name: 'string',

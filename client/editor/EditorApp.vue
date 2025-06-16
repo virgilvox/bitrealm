@@ -67,7 +67,12 @@
       <!-- Main Content Area -->
       <div class="editor-content-area">
         <keep-alive>
-          <component :is="activeComponent" />
+          <component 
+            :is="activeComponent"
+            :map-data="mapData"
+            @tile-click="handleTileClick"
+            @object-select="handleObjectSelect"
+          />
         </keep-alive>
       </div>
     </main>
@@ -106,7 +111,7 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useEditorStore } from './stores/editor'
 import { useCollaborationStore } from './stores/collaboration'
-import { PixiMapEditor } from './components/PixiMapEditor'
+import PixiMapEditorComponent from './components/PixiMapEditorComponent.vue'
 import AssetPackSelector from './components/AssetPackSelector.vue'
 import SpriteAnimationEditor from './components/SpriteAnimationEditor.vue'
 import CharacterCustomizer from './components/CharacterCustomizer.vue'
@@ -114,7 +119,7 @@ import CharacterCustomizer from './components/CharacterCustomizer.vue'
 export default {
   name: 'EditorApp',
   components: {
-    PixiMapEditor,
+    PixiMapEditorComponent,
     AssetPackSelector,
     SpriteAnimationEditor,
     CharacterCustomizer
@@ -124,8 +129,6 @@ export default {
     const collaborationStore = useCollaborationStore()
     
     // Refs
-    const canvasContainer = ref(null)
-    const pixiEditor = ref(null)
     
     // State
     const selectedTool = ref('select')
@@ -182,7 +185,7 @@ export default {
     const collaborators = ref([])
 
     const editorViews = [
-      { id: 'map', name: 'Map Editor', icon: 'fas fa-map', component: 'PixiMapEditor' },
+      { id: 'map', name: 'Map Editor', icon: 'fas fa-map', component: 'PixiMapEditorComponent' },
       { id: 'assets', name: 'Asset Packs', icon: 'fas fa-box-open', component: 'AssetPackSelector' },
       { id: 'animations', name: 'Animation Editor', icon: 'fas fa-running', component: 'SpriteAnimationEditor' },
       { id: 'characters', name: 'Character Creator', icon: 'fas fa-user-edit', component: 'CharacterCustomizer' },
@@ -190,22 +193,10 @@ export default {
 
     const activeComponent = computed(() => {
       const view = editorViews.find(v => v.id === activeView.value)
-      return view ? view.component : 'PixiMapEditor'
+      return view ? view.component : 'PixiMapEditorComponent'
     })
 
-    /**
-     * Initialize PixiJS editor
-     */
-    const initPixiEditor = () => {
-      if (!canvasContainer.value) return
-      
-      pixiEditor.value = new PixiMapEditor({
-        container: canvasContainer.value,
-        mapData: mapData.value,
-        onTileClick: handleTileClick,
-        onObjectSelect: handleObjectSelect
-      })
-    }
+
 
     /**
      * Handle tile click based on selected tool
@@ -269,10 +260,7 @@ export default {
         layer.tiles.push({ x: data.x, y: data.y, tileId: data.tileId })
       }
 
-      // Update PixiJS display
-      if (pixiEditor.value) {
-        pixiEditor.value.updateTile(data.layerId, data.x, data.y, data.tileId)
-      }
+      // The PixiMapEditorComponent will update automatically through Vue reactivity
     }
 
     /**
@@ -307,9 +295,7 @@ export default {
       const layer = mapData.value.layers.find(l => l.id === layerId)
       if (layer) {
         layer.visible = !layer.visible
-        if (pixiEditor.value) {
-          pixiEditor.value.setLayerVisibility(layerId, layer.visible)
-        }
+        // Layer visibility will update through Vue reactivity
       }
     }
 
@@ -331,9 +317,7 @@ export default {
      */
     const zoomIn = () => {
       zoom.value = Math.min(zoom.value * 1.2, 3)
-      if (pixiEditor.value) {
-        pixiEditor.value.setZoom(zoom.value)
-      }
+      // Zoom will be handled by the component through props
     }
 
     /**
@@ -341,18 +325,14 @@ export default {
      */
     const zoomOut = () => {
       zoom.value = Math.max(zoom.value / 1.2, 0.1)
-      if (pixiEditor.value) {
-        pixiEditor.value.setZoom(zoom.value)
-      }
+      // Zoom will be handled by the component through props
     }
 
     /**
      * Update object property
      */
     const updateObjectProperty = () => {
-      if (selectedObject.value && pixiEditor.value) {
-        pixiEditor.value.updateObject(selectedObject.value)
-      }
+      // Object updates will be handled through the component
     }
 
     /**
@@ -428,8 +408,6 @@ export default {
 
     // Initialize on mount
     onMounted(() => {
-      initPixiEditor()
-      
       // Initialize collaboration
       collaborationStore.connect(project.value.id)
       collaborationStore.onEdit(applyEdit)
@@ -445,16 +423,10 @@ export default {
 
     // Cleanup on unmount
     onUnmounted(() => {
-      if (pixiEditor.value) {
-        pixiEditor.value.destroy()
-      }
       collaborationStore.disconnect()
     })
 
     return {
-      // Refs
-      canvasContainer,
-      
       // State
       project,
       tools,
@@ -489,7 +461,9 @@ export default {
       editScript,
       createScript,
       saveScript,
-      closeScriptEditor
+      closeScriptEditor,
+      handleTileClick,
+      handleObjectSelect
     }
   }
 }

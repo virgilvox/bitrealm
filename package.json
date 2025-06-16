@@ -33,6 +33,7 @@
     "@colyseus/playground": "^0.15.0",
     "@colyseus/ws-transport": "^0.15.0",
     "@fastify/cors": "^8.2.0",
+    "@fastify/rate-limit": "^10.3.0",
     "@fastify/static": "^6.6.1",
     "@trpc/client": "^10.9.0",
     "@trpc/server": "^10.9.0",
