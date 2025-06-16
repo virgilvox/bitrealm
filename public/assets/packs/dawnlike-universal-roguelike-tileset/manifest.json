@@ -1,0 +1,40 @@
+{
+  "name": "DawnLike Universal Roguelike Tileset",
+  "description": "Complete 16x16 tileset for roguelike/RPG games",
+  "author": "DragonDePlatino",
+  "version": "1.0.0",
+  "assets": {
+    "tilesets/dawnlike-floors.png": {
+      "type": "tileset",
+      "animations": null,
+      "tileSize": 16,
+      "gridSize": null
+    },
+    "tilesets/dawnlike-walls.png": {
+      "type": "tileset",
+      "animations": null,
+      "tileSize": 16,
+      "gridSize": null
+    },
+    "tilesets/dawnlike-objects.png": {
+      "type": "tileset",
+      "animations": null,
+      "tileSize": 16,
+      "gridSize": null
+    }
+  },
+  "equipmentLayers": {
+    "base": 0,
+    "underwear": 1,
+    "pants": 2,
+    "shirt": 3,
+    "armor": 4,
+    "boots": 5,
+    "gloves": 6,
+    "helmet": 7,
+    "hair": 8,
+    "weapon": 9,
+    "shield": 10,
+    "effects": 11
+  }
+}

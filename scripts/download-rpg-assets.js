@@ -21,67 +21,34 @@ const __dirname = dirname(__filename);
 const ASSETS_DIR = path.join(__dirname, '../public/assets/packs');
 
 // High-quality RPG asset sources
+// Note: URLs have been updated to more stable sources.
 const ASSET_PACKS = [
   {
-    name: 'LPC Character Sprites',
-    description: 'Liberated Pixel Cup character base with animations',
-    author: 'LPC Contributors',
-    assets: {
-      'characters/lpc-base-male.png': {
-        url: 'https://opengameart.org/sites/default/files/Universal-LPC-spritesheet-male-01.png',
-        type: 'character',
-        animations: {
-          walk: { frames: 8, directions: 4, frameWidth: 64, frameHeight: 64 },
-          attack: { frames: 6, directions: 4, frameWidth: 64, frameHeight: 64 },
-          idle: { frames: 1, directions: 4, frameWidth: 64, frameHeight: 64 }
-        }
-      },
-      'characters/lpc-base-female.png': {
-        url: 'https://opengameart.org/sites/default/files/Universal-LPC-spritesheet-female-01.png',
-        type: 'character',
-        animations: {
-          walk: { frames: 8, directions: 4, frameWidth: 64, frameHeight: 64 },
-          attack: { frames: 6, directions: 4, frameWidth: 64, frameHeight: 64 },
-          idle: { frames: 1, directions: 4, frameWidth: 64, frameHeight: 64 }
-        }
-      }
-    }
+    name: 'lpc-character-sprites',
+    type: 'zip',
+    description: 'Liberated Pixel Cup Revised character base with animations',
+    author: 'Eliza Wyatt, Stephen Challener, et al.',
+    url: 'https://opengameart.org/sites/default/files/lpc_revised_character_basics.zip',
+    // We will process the contents of the zip after download
+    assets: {} 
   },
   {
-    name: 'Pipoya Free RPG Character Sprites',
+    name: 'pipoya-rpg-sprites',
+    type: 'zip',
     description: '32x32 animated character sprites in classic RPG style',
     author: 'Pipoya',
-    assets: {
-      'characters/pipoya-male-01.png': {
-        url: 'https://pipoya.net/sozai/assets/chars/pipo-charachip01.png',
-        type: 'character',
-        animations: {
-          walk: { frames: 3, directions: 4, frameWidth: 32, frameHeight: 32 }
-        }
-      }
-    }
+    // Itch.io download is behind a JS gateway, so we link to a mirror.
+    // In a real scenario, manual download might be required or using an API.
+    url: 'https://archive.org/download/pipoya-free-rpg-character-sprites-32x32/PIPOYA%20FREE%20RPG%20Character%20Sprites%2032x32.zip',
+    assets: {}
   },
   {
-    name: 'DawnLike Universal Roguelike Tileset',
+    name: 'dawnlike-tileset',
+    type: 'zip',
     description: 'Complete 16x16 tileset for roguelike/RPG games',
-    author: 'DragonDePlatino',
-    assets: {
-      'tilesets/dawnlike-floors.png': {
-        url: 'https://opengameart.org/sites/default/files/Floor.png',
-        type: 'tileset',
-        tileSize: 16
-      },
-      'tilesets/dawnlike-walls.png': {
-        url: 'https://opengameart.org/sites/default/files/Wall.png',
-        type: 'tileset',
-        tileSize: 16
-      },
-      'tilesets/dawnlike-objects.png': {
-        url: 'https://opengameart.org/sites/default/files/Objects.png',
-        type: 'tileset',
-        tileSize: 16
-      }
-    }
+    author: 'DragonDePlatino & DawnBringer',
+    url: 'https://opengameart.org/sites/default/files/DawnLike_1.zip',
+    assets: {}
   },
   {
     name: 'RPG Item Pack',
@@ -162,6 +129,17 @@ async function downloadFile(url, filepath) {
   console.log(`✓ Downloaded: ${path.basename(filepath)}`);
 }
 
+async function processZip(filepath, packDir) {
+  try {
+    const zip = new AdmZip(filepath);
+    zip.extractAllTo(packDir, /*overwrite*/ true);
+    console.log(`✓ Extracted: ${path.basename(filepath)}`);
+    fs.unlinkSync(filepath); // Clean up zip file
+  } catch (e) {
+    console.error(`❌ Failed to extract zip file: ${filepath}`, e);
+  }
+}
+
 async function createAssetPackManifest(pack, packDir) {
   const manifest = {
     name: pack.name,
@@ -172,13 +150,16 @@ async function createAssetPackManifest(pack, packDir) {
     equipmentLayers: EQUIPMENT_LAYERS
   };
   
-  for (const [filename, assetInfo] of Object.entries(pack.assets)) {
-    manifest.assets[filename] = {
-      type: assetInfo.type,
-      animations: assetInfo.animations || null,
-      tileSize: assetInfo.tileSize || null,
-      gridSize: assetInfo.gridSize || null
-    };
+  // For non-zip packs, the asset list is predefined.
+  if (pack.type !== 'zip') {
+    for (const [filename, assetInfo] of Object.entries(pack.assets)) {
+      manifest.assets[filename] = {
+        type: assetInfo.type,
+        animations: assetInfo.animations || null,
+        tileSize: assetInfo.tileSize || null,
+        gridSize: assetInfo.gridSize || null
+      };
+    }
   }
   
   fs.writeFileSync(
@@ -198,27 +179,43 @@ async function downloadAssetPacks() {
   for (const pack of ASSET_PACKS) {
     console.log(`\n📦 Downloading ${pack.name}...`);
     
-    const packDir = path.join(ASSETS_DIR, pack.name.toLowerCase().replace(/\s+/g, '-'));
+    const packDir = path.join(ASSETS_DIR, pack.name);
     if (!fs.existsSync(packDir)) {
       fs.mkdirSync(packDir, { recursive: true });
     }
     
-    for (const [filename, assetInfo] of Object.entries(pack.assets)) {
-      const filepath = path.join(packDir, filename);
-      const fileDir = path.dirname(filepath);
-      
-      if (!fs.existsSync(fileDir)) {
-        fs.mkdirSync(fileDir, { recursive: true });
-      }
-      
+    if (pack.type === 'zip') {
+      const zipPath = path.join(packDir, `${pack.name}.zip`);
       try {
-        if (!fs.existsSync(filepath)) {
-          await downloadFile(assetInfo.url, filepath);
+        if (!fs.existsSync(zipPath)) { // Simple check, could be more robust
+          await downloadFile(pack.url, zipPath);
+          await processZip(zipPath, packDir);
         } else {
-          console.log(`⏭️  Skipping ${filename} (already exists)`);
+          console.log(`⏭️  Skipping download for ${pack.name} (zip exists)`);
+          await processZip(zipPath, packDir); // Still process it
         }
       } catch (error) {
-        console.error(`❌ Failed to download ${filename}: ${error.message}`);
+        console.error(`❌ Failed to download or process ${pack.name}: ${error.message}`);
+      }
+    } else {
+      // Handle individual file downloads (if any)
+      for (const [filename, assetInfo] of Object.entries(pack.assets)) {
+        const filepath = path.join(packDir, filename);
+        const fileDir = path.dirname(filepath);
+        
+        if (!fs.existsSync(fileDir)) {
+          fs.mkdirSync(fileDir, { recursive: true });
+        }
+        
+        try {
+          if (!fs.existsSync(filepath)) {
+            await downloadFile(assetInfo.url, filepath);
+          } else {
+            console.log(`⏭️  Skipping ${filename} (already exists)`);
+          }
+        } catch (error) {
+          console.error(`❌ Failed to download ${filename}: ${error.message}`);
+        }
       }
     }
     

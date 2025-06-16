@@ -1,0 +1,21 @@
+{
+  "name": "pipoya-rpg-sprites",
+  "description": "32x32 animated character sprites in classic RPG style",
+  "author": "Pipoya",
+  "version": "1.0.0",
+  "assets": {},
+  "equipmentLayers": {
+    "base": 0,
+    "underwear": 1,
+    "pants": 2,
+    "shirt": 3,
+    "armor": 4,
+    "boots": 5,
+    "gloves": 6,
+    "helmet": 7,
+    "hair": 8,
+    "weapon": 9,
+    "shield": 10,
+    "effects": 11
+  }
+}

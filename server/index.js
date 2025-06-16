@@ -8,21 +8,25 @@ import staticFiles from '@fastify/static'
 import helmet from 'helmet'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-
-// Import rooms
-import { GameRoom } from './rooms/GameRoom.js'
-import { EditorRoom } from './rooms/EditorRoom.js'
+import { assetPackRoutes } from './api/assetPacks.js'
+import { spriteAnimationRoutes } from './api/spriteAnimation.js'
+import { projectRoutes } from './api/projects.js'
 
 // Import API routes  
 import { apiRoutes } from './api/index.js'
 import { authRoutes, registerAuthMiddleware } from './api/auth.js'
 import { assetRoutes } from './api/assets.js'
-import { assetPackRoutes } from './api/assetPacks.js'
-import { projectRoutes } from './api/projects.js'
+
+// Import room handlers
+import { GameRoom } from './rooms/GameRoom.js'
+import { EditorRoom } from './rooms/EditorRoom.js'
 
 // Import database
 import { initDatabase } from './database/index.js'
 import { initializeBucket } from './utils/minio.js'
+
+// Import rate limiting
+import rateLimit from '@fastify/rate-limit'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -40,7 +44,8 @@ async function bootstrap() {
   // Create Fastify instance
   const fastify = Fastify({
     logger: true,
-    trustProxy: true
+    trustProxy: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
   })
 
   // Register authentication middleware
@@ -80,10 +85,17 @@ async function bootstrap() {
     decorateReply: false
   })
 
+  // Rate Limiting
+  await fastify.register(rateLimit, {
+    max: 100,
+    timeWindow: '1 minute'
+  })
+
   // API routes
   await fastify.register(authRoutes, { prefix: '/api/auth' })
   await fastify.register(assetRoutes, { prefix: '/api/assets' })
   await fastify.register(assetPackRoutes, { prefix: '/api/assets' })
+  await fastify.register(spriteAnimationRoutes, { prefix: '/api/sprites' })
   await fastify.register(projectRoutes, { prefix: '/api/projects' })
   await fastify.register(apiRoutes, { prefix: '/api' })
 

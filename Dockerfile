@@ -1,29 +1,29 @@
 # Build stage
-FROM node:18-alpine AS builder
+FROM node:20.13.1-bookworm-slim AS builder
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production && npm cache clean --force
+# Install all dependencies (including devDependencies for the build)
+RUN npm ci && npm cache clean --force
 
-# Copy source code
+# Copy source
 COPY . .
 
 # Build client assets
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine AS production
+FROM node:20.13.1-bookworm-slim AS production
 
 # Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+RUN apt-get update && apt-get install -y dumb-init && rm -rf /var/lib/apt/lists/*
 
-# Create app user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S bitrealm -u 1001
+# Create user and group
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 --ingroup nodejs bitrealm
 
 WORKDIR /app
 

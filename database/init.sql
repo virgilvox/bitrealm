@@ -39,6 +39,21 @@ CREATE TABLE IF NOT EXISTS projects (
   metadata JSONB DEFAULT '{}'
 );
 
+-- Asset packs/sets (moved before assets table)
+CREATE TABLE IF NOT EXISTS asset_packs (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    author VARCHAR(255),
+    version VARCHAR(50) DEFAULT '1.0.0',
+    is_default BOOLEAN DEFAULT FALSE,
+    is_public BOOLEAN DEFAULT TRUE,
+    thumbnail_url TEXT,
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Assets table
 CREATE TABLE IF NOT EXISTS assets (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -127,19 +142,25 @@ CREATE TABLE IF NOT EXISTS plugin_storage (
   UNIQUE(plugin_name, key)
 );
 
--- Asset packs/sets
-CREATE TABLE IF NOT EXISTS asset_packs (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    author VARCHAR(255),
-    version VARCHAR(50) DEFAULT '1.0.0',
-    is_default BOOLEAN DEFAULT FALSE,
-    is_public BOOLEAN DEFAULT TRUE,
-    thumbnail_url TEXT,
-    metadata JSONB DEFAULT '{}',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- Characters table (moved before character_layers)
+CREATE TABLE IF NOT EXISTS characters (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    name VARCHAR(100) NOT NULL,
+    level INTEGER DEFAULT 1,
+    experience INTEGER DEFAULT 0,
+    health INTEGER DEFAULT 100,
+    max_health INTEGER DEFAULT 100,
+    mana INTEGER DEFAULT 50,
+    max_mana INTEGER DEFAULT 50,
+    position_x INTEGER DEFAULT 0,
+    position_y INTEGER DEFAULT 0,
+    map_id VARCHAR(100),
+    sprite_data JSONB DEFAULT '{}',
+    stats JSONB DEFAULT '{}',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Project asset pack selections
@@ -160,27 +181,6 @@ CREATE TABLE IF NOT EXISTS character_layers (
     layer_order INTEGER DEFAULT 0,
     tint_color VARCHAR(7),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Characters table (if not exists)
-CREATE TABLE IF NOT EXISTS characters (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
-    name VARCHAR(100) NOT NULL,
-    level INTEGER DEFAULT 1,
-    experience INTEGER DEFAULT 0,
-    health INTEGER DEFAULT 100,
-    max_health INTEGER DEFAULT 100,
-    mana INTEGER DEFAULT 50,
-    max_mana INTEGER DEFAULT 50,
-    position_x INTEGER DEFAULT 0,
-    position_y INTEGER DEFAULT 0,
-    map_id VARCHAR(100),
-    sprite_data JSONB DEFAULT '{}',
-    stats JSONB DEFAULT '{}',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Inventory table (if not exists)

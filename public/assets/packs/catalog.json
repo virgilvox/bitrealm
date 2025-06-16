@@ -1,0 +1,35 @@
+{
+  "packs": [
+    {
+      "name": "lpc-character-sprites",
+      "description": "Liberated Pixel Cup Revised character base with animations",
+      "author": "Eliza Wyatt, Stephen Challener, et al.",
+      "directory": "lpc-character-sprites"
+    },
+    {
+      "name": "pipoya-rpg-sprites",
+      "description": "32x32 animated character sprites in classic RPG style",
+      "author": "Pipoya",
+      "directory": "pipoya-rpg-sprites"
+    },
+    {
+      "name": "dawnlike-tileset",
+      "description": "Complete 16x16 tileset for roguelike/RPG games",
+      "author": "DragonDePlatino & DawnBringer",
+      "directory": "dawnlike-tileset"
+    },
+    {
+      "name": "RPG Item Pack",
+      "description": "High-quality RPG items including weapons, armor, and consumables",
+      "author": "Henrique Lazarini (7Soul)",
+      "directory": "rpg-item-pack"
+    },
+    {
+      "name": "Zelda-like Tilesets",
+      "description": "Overworld tileset in 16-bit style",
+      "author": "ArMM1998",
+      "directory": "zelda-like-tilesets"
+    }
+  ],
+  "defaultPack": "lpc-character-sprites"
+}

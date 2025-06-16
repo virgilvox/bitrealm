@@ -1,0 +1,49 @@
+{
+  "name": "RPG Item Pack",
+  "description": "High-quality RPG items including weapons, armor, and consumables",
+  "author": "Henrique Lazarini (7Soul)",
+  "version": "1.0.0",
+  "assets": {
+    "items/weapons-swords.png": {
+      "type": "items",
+      "animations": null,
+      "tileSize": null,
+      "gridSize": {
+        "width": 32,
+        "height": 32
+      }
+    },
+    "items/armor-sets.png": {
+      "type": "items",
+      "animations": null,
+      "tileSize": null,
+      "gridSize": {
+        "width": 32,
+        "height": 32
+      }
+    },
+    "items/potions.png": {
+      "type": "items",
+      "animations": null,
+      "tileSize": null,
+      "gridSize": {
+        "width": 32,
+        "height": 32
+      }
+    }
+  },
+  "equipmentLayers": {
+    "base": 0,
+    "underwear": 1,
+    "pants": 2,
+    "shirt": 3,
+    "armor": 4,
+    "boots": 5,
+    "gloves": 6,
+    "helmet": 7,
+    "hair": 8,
+    "weapon": 9,
+    "shield": 10,
+    "effects": 11
+  }
+}

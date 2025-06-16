@@ -1,0 +1,28 @@
+{
+  "name": "Zelda-like Tilesets",
+  "description": "Overworld tileset in 16-bit style",
+  "author": "ArMM1998",
+  "version": "1.0.0",
+  "assets": {
+    "tilesets/zelda-overworld.png": {
+      "type": "tileset",
+      "animations": null,
+      "tileSize": 16,
+      "gridSize": null
+    }
+  },
+  "equipmentLayers": {
+    "base": 0,
+    "underwear": 1,
+    "pants": 2,
+    "shirt": 3,
+    "armor": 4,
+    "boots": 5,
+    "gloves": 6,
+    "helmet": 7,
+    "hair": 8,
+    "weapon": 9,
+    "shield": 10,
+    "effects": 11
+  }
+}

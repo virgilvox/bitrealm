@@ -6,6 +6,64 @@ import { Player } from '../schemas/Player.js'
 import { NPC } from '../schemas/NPC.js'
 import { Item } from '../schemas/Item.js'
 
+// Spatial grid for proximity checks
+class SpatialGrid {
+  constructor(width, height, cellSize) {
+    this.width = width
+    this.height = height
+    this.cellSize = cellSize
+    this.cols = Math.ceil(width / cellSize)
+    this.rows = Math.ceil(height / cellSize)
+    this.grid = new Array(this.cols * this.rows).fill(0).map(() => new Set())
+  }
+
+  _getCellIndex(x, y) {
+    const col = Math.max(0, Math.min(this.cols - 1, Math.floor(x / this.cellSize)))
+    const row = Math.max(0, Math.min(this.rows - 1, Math.floor(y / this.cellSize)))
+    return row * this.cols + col
+  }
+
+  insert(player) {
+    const index = this._getCellIndex(player.x, player.y)
+    this.grid[index].add(player.id)
+    player.cellIndex = index
+  }
+
+  update(player) {
+    const newIndex = this._getCellIndex(player.x, player.y)
+    if (player.cellIndex !== newIndex) {
+      if (this.grid[player.cellIndex]) {
+        this.grid[player.cellIndex].delete(player.id)
+      }
+      this.insert(player)
+    }
+  }
+
+  remove(player) {
+    if (this.grid[player.cellIndex]) {
+      this.grid[player.cellIndex].delete(player.id)
+    }
+  }
+
+  getNearby(player) {
+    const nearbyPlayerIds = new Set()
+    const col = Math.floor(player.x / this.cellSize)
+    const row = Math.floor(player.y / this.cellSize)
+
+    for (let r = -1; r <= 1; r++) {
+      for (let c = -1; c <= 1; c++) {
+        const checkRow = row + r
+        const checkCol = col + c
+        if (checkRow >= 0 && checkRow < this.rows && checkCol >= 0 && checkCol < this.cols) {
+          const index = checkRow * this.cols + checkCol
+          this.grid[index].forEach(id => nearbyPlayerIds.add(id))
+        }
+      }
+    }
+    return nearbyPlayerIds
+  }
+}
+
 export class GameRoom extends Room {
   maxClients = 100
   
@@ -14,6 +72,9 @@ export class GameRoom extends Room {
     
     // Initialize world state
     this.setState(new WorldState())
+    
+    // Initialize spatial grid
+    this.grid = new SpatialGrid(5000, 5000, 256); // World size and cell size
     
     // Load world data from database
     this.loadWorld(options.worldId || 'default')
@@ -100,6 +161,7 @@ export class GameRoom extends Room {
     player.experience = 0
 
     this.state.players.set(client.sessionId, player)
+    this.grid.insert(player) // Add player to grid
 
     // Fire playerJoin event in DSL
     this.dslInterpreter.fireEvent('playerJoin', {
@@ -110,6 +172,7 @@ export class GameRoom extends Room {
     // Send initial world data to client
     client.send('worldData', {
       maps: this.worldData.maps,
+      tilesets: this.worldData.tilesets, // Send tileset definitions
       npcs: Array.from(this.state.npcs.values()),
       items: Array.from(this.state.worldItems.values())
     })
@@ -126,6 +189,7 @@ export class GameRoom extends Room {
         client: client
       })
 
+      this.grid.remove(player) // Remove player from grid
       this.state.players.delete(client.sessionId)
     }
   }
@@ -143,6 +207,8 @@ export class GameRoom extends Room {
       
       player.x = x
       player.y = y
+
+      this.grid.update(player) // Update player position in grid
 
       // Check for region enter/exit events
       this.checkRegionEvents(player, oldX, oldY, x, y)
@@ -163,7 +229,7 @@ export class GameRoom extends Room {
       timestamp: Date.now()
     }
 
-    // Broadcast to all players
+    // Broadcast to ALL players (chat is not proximity-based)
     this.broadcast('chat', chatMessage)
 
     // Fire chat event in DSL
@@ -241,12 +307,18 @@ export class GameRoom extends Room {
       const damage = Math.floor(Math.random() * 20) + 10
       target.health -= damage
       
-      // Broadcast attack animation
-      this.broadcast('attack', {
-        attackerId: client.sessionId,
-        targetId: targetId,
-        damage: damage
-      })
+      // Broadcast attack animation to nearby players
+      const nearbyPlayers = this.getNearbyPlayers(player)
+      for(const p of nearbyPlayers) {
+        if(p.id !== player.id) {
+          const c = this.clients.find(c => c.sessionId === p.id)
+          c?.send('attack', {
+            attackerId: client.sessionId,
+            targetId: targetId,
+            damage: damage
+          })
+        }
+      }
 
       // Check if target is defeated
       if (target.health <= 0) {
@@ -361,5 +433,17 @@ export class GameRoom extends Room {
       this.autoSaveInterval.clear()
     }
     this.saveWorldState()
+  }
+
+  getNearbyPlayers(player) {
+    const nearbyIds = this.grid.getNearby(player)
+    const players = []
+    for (const id of nearbyIds) {
+      const p = this.state.players.get(id)
+      if (p) {
+        players.push(p)
+      }
+    }
+    return players
   }
 }

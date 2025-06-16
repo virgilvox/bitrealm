@@ -34,7 +34,6 @@
     "@colyseus/ws-transport": "^0.15.0",
     "@fastify/cors": "^8.2.0",
     "@fastify/static": "^6.6.1",
-    "@fastify/websocket": "^7.1.2",
     "@trpc/client": "^10.9.0",
     "@trpc/server": "^10.9.0",
     "@vueuse/core": "^10.7.0",
@@ -57,7 +56,8 @@
     "rate-limiter-flexible": "^2.4.1",
     "redis": "^4.5.1",
     "sharp": "^0.32.0",
-    "vue": "^3.4.0"
+    "vue": "^3.4.0",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.0",

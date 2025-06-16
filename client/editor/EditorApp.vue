@@ -48,103 +48,28 @@
 
     <!-- Main Editor -->
     <main class="editor-main">
-      <!-- Left Sidebar -->
-      <aside class="editor-sidebar left">
-        <div class="sidebar-section">
-          <h3>Layers</h3>
-          <div class="layer-list">
-            <div 
-              v-for="layer in mapData.layers" 
-              :key="layer.id"
-              :class="['layer-item', { active: selectedLayer === layer.id }]"
-              @click="selectLayer(layer.id)"
-            >
-              <span class="layer-visibility" @click.stop="toggleLayerVisibility(layer.id)">
-                {{ layer.visible ? '👁️' : '🚫' }}
-              </span>
-              <span class="layer-name">{{ layer.name }}</span>
-            </div>
-          </div>
-          <button @click="addLayer" class="btn btn-sm">Add Layer</button>
-        </div>
-
-        <div class="sidebar-section">
-          <h3>Tilesets</h3>
-          <div class="tileset-picker">
-            <div class="tileset-grid">
-              <div 
-                v-for="tile in currentTileset.tiles" 
-                :key="tile.id"
-                :class="['tile-item', { active: selectedTile === tile.id }]"
-                @click="selectTile(tile.id)"
-                :style="{ backgroundImage: `url(${tile.image})` }"
-              >
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- Left Sidebar for navigation -->
+      <aside class="editor-sidebar left-nav">
+        <nav class="sidebar-nav">
+          <button 
+            v-for="view in editorViews" 
+            :key="view.id"
+            @click="activeView = view.id"
+            :class="{ active: activeView === view.id }"
+            class="nav-btn"
+          >
+            <i :class="view.icon"></i>
+            <span>{{ view.name }}</span>
+          </button>
+        </nav>
       </aside>
 
-      <!-- Canvas Area -->
-      <section class="editor-canvas-area">
-        <div class="canvas-toolbar">
-          <div class="zoom-controls">
-            <button @click="zoomOut" class="btn btn-sm">-</button>
-            <span class="zoom-level">{{ Math.round(zoom * 100) }}%</span>
-            <button @click="zoomIn" class="btn btn-sm">+</button>
-          </div>
-          
-          <div class="grid-controls">
-            <label>
-              <input type="checkbox" v-model="showGrid" />
-              Show Grid
-            </label>
-          </div>
-        </div>
-        
-        <!-- PixiJS Canvas Container -->
-        <div ref="canvasContainer" class="canvas-container">
-          <!-- Canvas will be mounted here by PixiJS -->
-        </div>
-      </section>
-
-      <!-- Right Sidebar -->
-      <aside class="editor-sidebar right">
-        <div class="sidebar-section">
-          <h3>Properties</h3>
-          <div class="property-editor">
-            <div v-if="selectedObject">
-              <h4>{{ selectedObject.type }}</h4>
-              <div class="property-group">
-                <label>X:</label>
-                <input type="number" v-model="selectedObject.x" @input="updateObjectProperty" />
-              </div>
-              <div class="property-group">
-                <label>Y:</label>
-                <input type="number" v-model="selectedObject.y" @input="updateObjectProperty" />
-              </div>
-            </div>
-            <div v-else class="no-selection">
-              No object selected
-            </div>
-          </div>
-        </div>
-
-        <div class="sidebar-section">
-          <h3>Scripts</h3>
-          <div class="script-list">
-            <div 
-              v-for="script in scripts" 
-              :key="script.id"
-              class="script-item"
-              @click="editScript(script)"
-            >
-              {{ script.name }}
-            </div>
-          </div>
-          <button @click="createScript" class="btn btn-sm">New Script</button>
-        </div>
-      </aside>
+      <!-- Main Content Area -->
+      <div class="editor-content-area">
+        <keep-alive>
+          <component :is="activeComponent" />
+        </keep-alive>
+      </div>
     </main>
 
     <!-- Script Editor Modal -->
@@ -178,13 +103,22 @@
  * @description PixiJS-based map editor with real-time collaboration
  */
 
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useEditorStore } from './stores/editor'
 import { useCollaborationStore } from './stores/collaboration'
 import { PixiMapEditor } from './components/PixiMapEditor'
+import AssetPackSelector from './components/AssetPackSelector.vue'
+import SpriteAnimationEditor from './components/SpriteAnimationEditor.vue'
+import CharacterCustomizer from './components/CharacterCustomizer.vue'
 
 export default {
   name: 'EditorApp',
+  components: {
+    PixiMapEditor,
+    AssetPackSelector,
+    SpriteAnimationEditor,
+    CharacterCustomizer
+  },
   setup() {
     const editorStore = useEditorStore()
     const collaborationStore = useCollaborationStore()
@@ -203,6 +137,7 @@ export default {
     const saving = ref(false)
     const showScriptEditor = ref(false)
     const currentScript = ref({ id: null, name: '', content: '' })
+    const activeView = ref('map')
 
     // Mock data for proof of concept
     const project = ref({
@@ -245,6 +180,18 @@ export default {
     ])
 
     const collaborators = ref([])
+
+    const editorViews = [
+      { id: 'map', name: 'Map Editor', icon: 'fas fa-map', component: 'PixiMapEditor' },
+      { id: 'assets', name: 'Asset Packs', icon: 'fas fa-box-open', component: 'AssetPackSelector' },
+      { id: 'animations', name: 'Animation Editor', icon: 'fas fa-running', component: 'SpriteAnimationEditor' },
+      { id: 'characters', name: 'Character Creator', icon: 'fas fa-user-edit', component: 'CharacterCustomizer' },
+    ]
+
+    const activeComponent = computed(() => {
+      const view = editorViews.find(v => v.id === activeView.value)
+      return view ? view.component : 'PixiMapEditor'
+    })
 
     /**
      * Initialize PixiJS editor
@@ -524,6 +471,9 @@ export default {
       saving,
       showScriptEditor,
       currentScript,
+      activeView,
+      editorViews,
+      activeComponent,
       
       // Methods
       selectTool,
@@ -544,3 +494,56 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.editor-main {
+  grid-template-columns: 200px 1fr; /* Changed from three columns to two */
+}
+
+.left-nav {
+  padding: 1rem 0;
+  border-right: 1px solid #e2e8f0;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #4a5568;
+  border-left: 3px solid transparent;
+}
+
+.nav-btn:hover {
+  background: #f7fafc;
+}
+
+.nav-btn.active {
+  background: #e6fffa;
+  color: #2d3748;
+  font-weight: 600;
+  border-left-color: #38b2ac;
+}
+
+.nav-btn i {
+  width: 20px;
+  text-align: center;
+}
+
+.editor-content-area {
+  overflow: auto;
+  padding: 20px;
+}
+</style>

@@ -1,0 +1,1014 @@
+{
+  "amber": {
+    "frameSize": {
+      "width": 64,
+      "height": 64
+    },
+    "animations": {
+      "walk-up": {
+        "file": "Body/Masculine, Thin/Amber/Walk.png",
+        "row": 0,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-left": {
+        "file": "Body/Masculine, Thin/Amber/Walk.png",
+        "row": 1,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-down": {
+        "file": "Body/Masculine, Thin/Amber/Walk.png",
+        "row": 2,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-right": {
+        "file": "Body/Masculine, Thin/Amber/Walk.png",
+        "row": 3,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "run-up": {
+        "file": "Body/Masculine, Thin/Amber/Run.png",
+        "row": 0,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-left": {
+        "file": "Body/Masculine, Thin/Amber/Run.png",
+        "row": 1,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-down": {
+        "file": "Body/Masculine, Thin/Amber/Run.png",
+        "row": 2,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-right": {
+        "file": "Body/Masculine, Thin/Amber/Run.png",
+        "row": 3,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "idle-up": {
+        "file": "Body/Masculine, Thin/Amber/Idle.png",
+        "row": 0,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-left": {
+        "file": "Body/Masculine, Thin/Amber/Idle.png",
+        "row": 1,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-down": {
+        "file": "Body/Masculine, Thin/Amber/Idle.png",
+        "row": 2,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-right": {
+        "file": "Body/Masculine, Thin/Amber/Idle.png",
+        "row": 3,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      }
+    }
+  },
+  "bronze": {
+    "frameSize": {
+      "width": 64,
+      "height": 64
+    },
+    "animations": {
+      "walk-up": {
+        "file": "Body/Masculine, Thin/Bronze/Walk.png",
+        "row": 0,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-left": {
+        "file": "Body/Masculine, Thin/Bronze/Walk.png",
+        "row": 1,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-down": {
+        "file": "Body/Masculine, Thin/Bronze/Walk.png",
+        "row": 2,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-right": {
+        "file": "Body/Masculine, Thin/Bronze/Walk.png",
+        "row": 3,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "run-up": {
+        "file": "Body/Masculine, Thin/Bronze/Run.png",
+        "row": 0,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-left": {
+        "file": "Body/Masculine, Thin/Bronze/Run.png",
+        "row": 1,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-down": {
+        "file": "Body/Masculine, Thin/Bronze/Run.png",
+        "row": 2,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-right": {
+        "file": "Body/Masculine, Thin/Bronze/Run.png",
+        "row": 3,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "idle-up": {
+        "file": "Body/Masculine, Thin/Bronze/Idle.png",
+        "row": 0,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-left": {
+        "file": "Body/Masculine, Thin/Bronze/Idle.png",
+        "row": 1,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-down": {
+        "file": "Body/Masculine, Thin/Bronze/Idle.png",
+        "row": 2,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-right": {
+        "file": "Body/Masculine, Thin/Bronze/Idle.png",
+        "row": 3,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      }
+    }
+  },
+  "brown": {
+    "frameSize": {
+      "width": 64,
+      "height": 64
+    },
+    "animations": {
+      "walk-up": {
+        "file": "Body/Masculine, Thin/Brown/Walk.png",
+        "row": 0,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-left": {
+        "file": "Body/Masculine, Thin/Brown/Walk.png",
+        "row": 1,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-down": {
+        "file": "Body/Masculine, Thin/Brown/Walk.png",
+        "row": 2,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-right": {
+        "file": "Body/Masculine, Thin/Brown/Walk.png",
+        "row": 3,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "run-up": {
+        "file": "Body/Masculine, Thin/Brown/Run.png",
+        "row": 0,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-left": {
+        "file": "Body/Masculine, Thin/Brown/Run.png",
+        "row": 1,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-down": {
+        "file": "Body/Masculine, Thin/Brown/Run.png",
+        "row": 2,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-right": {
+        "file": "Body/Masculine, Thin/Brown/Run.png",
+        "row": 3,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "idle-up": {
+        "file": "Body/Masculine, Thin/Brown/Idle.png",
+        "row": 0,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-left": {
+        "file": "Body/Masculine, Thin/Brown/Idle.png",
+        "row": 1,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-down": {
+        "file": "Body/Masculine, Thin/Brown/Idle.png",
+        "row": 2,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-right": {
+        "file": "Body/Masculine, Thin/Brown/Idle.png",
+        "row": 3,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      }
+    }
+  },
+  "chocolate": {
+    "frameSize": {
+      "width": 64,
+      "height": 64
+    },
+    "animations": {
+      "walk-up": {
+        "file": "Body/Masculine, Thin/Chocolate/Walk.png",
+        "row": 0,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-left": {
+        "file": "Body/Masculine, Thin/Chocolate/Walk.png",
+        "row": 1,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-down": {
+        "file": "Body/Masculine, Thin/Chocolate/Walk.png",
+        "row": 2,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-right": {
+        "file": "Body/Masculine, Thin/Chocolate/Walk.png",
+        "row": 3,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "run-up": {
+        "file": "Body/Masculine, Thin/Chocolate/Run.png",
+        "row": 0,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-left": {
+        "file": "Body/Masculine, Thin/Chocolate/Run.png",
+        "row": 1,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-down": {
+        "file": "Body/Masculine, Thin/Chocolate/Run.png",
+        "row": 2,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-right": {
+        "file": "Body/Masculine, Thin/Chocolate/Run.png",
+        "row": 3,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "idle-up": {
+        "file": "Body/Masculine, Thin/Chocolate/Idle.png",
+        "row": 0,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-left": {
+        "file": "Body/Masculine, Thin/Chocolate/Idle.png",
+        "row": 1,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-down": {
+        "file": "Body/Masculine, Thin/Chocolate/Idle.png",
+        "row": 2,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-right": {
+        "file": "Body/Masculine, Thin/Chocolate/Idle.png",
+        "row": 3,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      }
+    }
+  },
+  "coffee": {
+    "frameSize": {
+      "width": 64,
+      "height": 64
+    },
+    "animations": {
+      "walk-up": {
+        "file": "Body/Masculine, Thin/Coffee/Walk.png",
+        "row": 0,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-left": {
+        "file": "Body/Masculine, Thin/Coffee/Walk.png",
+        "row": 1,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-down": {
+        "file": "Body/Masculine, Thin/Coffee/Walk.png",
+        "row": 2,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-right": {
+        "file": "Body/Masculine, Thin/Coffee/Walk.png",
+        "row": 3,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "run-up": {
+        "file": "Body/Masculine, Thin/Coffee/Run.png",
+        "row": 0,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-left": {
+        "file": "Body/Masculine, Thin/Coffee/Run.png",
+        "row": 1,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-down": {
+        "file": "Body/Masculine, Thin/Coffee/Run.png",
+        "row": 2,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-right": {
+        "file": "Body/Masculine, Thin/Coffee/Run.png",
+        "row": 3,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "idle-up": {
+        "file": "Body/Masculine, Thin/Coffee/Idle.png",
+        "row": 0,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-left": {
+        "file": "Body/Masculine, Thin/Coffee/Idle.png",
+        "row": 1,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-down": {
+        "file": "Body/Masculine, Thin/Coffee/Idle.png",
+        "row": 2,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-right": {
+        "file": "Body/Masculine, Thin/Coffee/Idle.png",
+        "row": 3,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      }
+    }
+  },
+  "cream": {
+    "frameSize": {
+      "width": 64,
+      "height": 64
+    },
+    "animations": {
+      "walk-up": {
+        "file": "Body/Masculine, Thin/Cream/Walk.png",
+        "row": 0,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-left": {
+        "file": "Body/Masculine, Thin/Cream/Walk.png",
+        "row": 1,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-down": {
+        "file": "Body/Masculine, Thin/Cream/Walk.png",
+        "row": 2,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-right": {
+        "file": "Body/Masculine, Thin/Cream/Walk.png",
+        "row": 3,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "run-up": {
+        "file": "Body/Masculine, Thin/Cream/Run.png",
+        "row": 0,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-left": {
+        "file": "Body/Masculine, Thin/Cream/Run.png",
+        "row": 1,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-down": {
+        "file": "Body/Masculine, Thin/Cream/Run.png",
+        "row": 2,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-right": {
+        "file": "Body/Masculine, Thin/Cream/Run.png",
+        "row": 3,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "idle-up": {
+        "file": "Body/Masculine, Thin/Cream/Idle.png",
+        "row": 0,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-left": {
+        "file": "Body/Masculine, Thin/Cream/Idle.png",
+        "row": 1,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-down": {
+        "file": "Body/Masculine, Thin/Cream/Idle.png",
+        "row": 2,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-right": {
+        "file": "Body/Masculine, Thin/Cream/Idle.png",
+        "row": 3,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      }
+    }
+  },
+  "ivory": {
+    "frameSize": {
+      "width": 64,
+      "height": 64
+    },
+    "animations": {
+      "walk-up": {
+        "file": "Body/Masculine, Thin/Ivory/Walk.png",
+        "row": 0,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-left": {
+        "file": "Body/Masculine, Thin/Ivory/Walk.png",
+        "row": 1,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-down": {
+        "file": "Body/Masculine, Thin/Ivory/Walk.png",
+        "row": 2,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-right": {
+        "file": "Body/Masculine, Thin/Ivory/Walk.png",
+        "row": 3,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "run-up": {
+        "file": "Body/Masculine, Thin/Ivory/Run.png",
+        "row": 0,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-left": {
+        "file": "Body/Masculine, Thin/Ivory/Run.png",
+        "row": 1,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-down": {
+        "file": "Body/Masculine, Thin/Ivory/Run.png",
+        "row": 2,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-right": {
+        "file": "Body/Masculine, Thin/Ivory/Run.png",
+        "row": 3,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "idle-up": {
+        "file": "Body/Masculine, Thin/Ivory/Idle.png",
+        "row": 0,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-left": {
+        "file": "Body/Masculine, Thin/Ivory/Idle.png",
+        "row": 1,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-down": {
+        "file": "Body/Masculine, Thin/Ivory/Idle.png",
+        "row": 2,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-right": {
+        "file": "Body/Masculine, Thin/Ivory/Idle.png",
+        "row": 3,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      }
+    }
+  },
+  "leather": {
+    "frameSize": {
+      "width": 64,
+      "height": 64
+    },
+    "animations": {
+      "walk-up": {
+        "file": "Body/Masculine, Thin/Leather/Walk.png",
+        "row": 0,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-left": {
+        "file": "Body/Masculine, Thin/Leather/Walk.png",
+        "row": 1,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-down": {
+        "file": "Body/Masculine, Thin/Leather/Walk.png",
+        "row": 2,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-right": {
+        "file": "Body/Masculine, Thin/Leather/Walk.png",
+        "row": 3,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "run-up": {
+        "file": "Body/Masculine, Thin/Leather/Run.png",
+        "row": 0,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-left": {
+        "file": "Body/Masculine, Thin/Leather/Run.png",
+        "row": 1,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-down": {
+        "file": "Body/Masculine, Thin/Leather/Run.png",
+        "row": 2,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-right": {
+        "file": "Body/Masculine, Thin/Leather/Run.png",
+        "row": 3,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "idle-up": {
+        "file": "Body/Masculine, Thin/Leather/Idle.png",
+        "row": 0,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-left": {
+        "file": "Body/Masculine, Thin/Leather/Idle.png",
+        "row": 1,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-down": {
+        "file": "Body/Masculine, Thin/Leather/Idle.png",
+        "row": 2,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-right": {
+        "file": "Body/Masculine, Thin/Leather/Idle.png",
+        "row": 3,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      }
+    }
+  },
+  "peach": {
+    "frameSize": {
+      "width": 64,
+      "height": 64
+    },
+    "animations": {
+      "walk-up": {
+        "file": "Body/Masculine, Thin/Peach/Walk.png",
+        "row": 0,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-left": {
+        "file": "Body/Masculine, Thin/Peach/Walk.png",
+        "row": 1,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-down": {
+        "file": "Body/Masculine, Thin/Peach/Walk.png",
+        "row": 2,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-right": {
+        "file": "Body/Masculine, Thin/Peach/Walk.png",
+        "row": 3,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "run-up": {
+        "file": "Body/Masculine, Thin/Peach/Run.png",
+        "row": 0,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-left": {
+        "file": "Body/Masculine, Thin/Peach/Run.png",
+        "row": 1,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-down": {
+        "file": "Body/Masculine, Thin/Peach/Run.png",
+        "row": 2,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-right": {
+        "file": "Body/Masculine, Thin/Peach/Run.png",
+        "row": 3,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "idle-up": {
+        "file": "Body/Masculine, Thin/Peach/Idle.png",
+        "row": 0,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-left": {
+        "file": "Body/Masculine, Thin/Peach/Idle.png",
+        "row": 1,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-down": {
+        "file": "Body/Masculine, Thin/Peach/Idle.png",
+        "row": 2,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-right": {
+        "file": "Body/Masculine, Thin/Peach/Idle.png",
+        "row": 3,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      }
+    }
+  },
+  "sepia": {
+    "frameSize": {
+      "width": 64,
+      "height": 64
+    },
+    "animations": {
+      "walk-up": {
+        "file": "Body/Masculine, Thin/Sepia/Walk.png",
+        "row": 0,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-left": {
+        "file": "Body/Masculine, Thin/Sepia/Walk.png",
+        "row": 1,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-down": {
+        "file": "Body/Masculine, Thin/Sepia/Walk.png",
+        "row": 2,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-right": {
+        "file": "Body/Masculine, Thin/Sepia/Walk.png",
+        "row": 3,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "run-up": {
+        "file": "Body/Masculine, Thin/Sepia/Run.png",
+        "row": 0,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-left": {
+        "file": "Body/Masculine, Thin/Sepia/Run.png",
+        "row": 1,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-down": {
+        "file": "Body/Masculine, Thin/Sepia/Run.png",
+        "row": 2,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-right": {
+        "file": "Body/Masculine, Thin/Sepia/Run.png",
+        "row": 3,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "idle-up": {
+        "file": "Body/Masculine, Thin/Sepia/Idle.png",
+        "row": 0,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-left": {
+        "file": "Body/Masculine, Thin/Sepia/Idle.png",
+        "row": 1,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-down": {
+        "file": "Body/Masculine, Thin/Sepia/Idle.png",
+        "row": 2,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-right": {
+        "file": "Body/Masculine, Thin/Sepia/Idle.png",
+        "row": 3,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      }
+    }
+  },
+  "tan": {
+    "frameSize": {
+      "width": 64,
+      "height": 64
+    },
+    "animations": {
+      "walk-up": {
+        "file": "Body/Masculine, Thin/Tan/Walk.png",
+        "row": 0,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-left": {
+        "file": "Body/Masculine, Thin/Tan/Walk.png",
+        "row": 1,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-down": {
+        "file": "Body/Masculine, Thin/Tan/Walk.png",
+        "row": 2,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "walk-right": {
+        "file": "Body/Masculine, Thin/Tan/Walk.png",
+        "row": 3,
+        "frames": 9,
+        "frameRate": 9,
+        "loop": true
+      },
+      "run-up": {
+        "file": "Body/Masculine, Thin/Tan/Run.png",
+        "row": 0,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-left": {
+        "file": "Body/Masculine, Thin/Tan/Run.png",
+        "row": 1,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-down": {
+        "file": "Body/Masculine, Thin/Tan/Run.png",
+        "row": 2,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "run-right": {
+        "file": "Body/Masculine, Thin/Tan/Run.png",
+        "row": 3,
+        "frames": 8,
+        "frameRate": 12,
+        "loop": true
+      },
+      "idle-up": {
+        "file": "Body/Masculine, Thin/Tan/Idle.png",
+        "row": 0,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-left": {
+        "file": "Body/Masculine, Thin/Tan/Idle.png",
+        "row": 1,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-down": {
+        "file": "Body/Masculine, Thin/Tan/Idle.png",
+        "row": 2,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      },
+      "idle-right": {
+        "file": "Body/Masculine, Thin/Tan/Idle.png",
+        "row": 3,
+        "frames": 6,
+        "frameRate": 6,
+        "loop": true
+      }
+    }
+  }
+}
