@@ -21,6 +21,7 @@ import { projectRoutes } from './api/projects.js'
 
 // Import database
 import { initDatabase } from './database/index.js'
+import { initializeBucket } from './utils/minio.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -31,6 +32,9 @@ const HOST = process.env.HOST || 'localhost'
 async function bootstrap() {
   // Initialize database
   await initDatabase()
+
+  // Initialize MinIO bucket
+  await initializeBucket()
 
   // Create Fastify instance
   const fastify = Fastify({

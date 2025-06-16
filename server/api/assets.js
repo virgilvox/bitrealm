@@ -3,52 +3,11 @@
  * @description Handle asset uploads, storage, and retrieval
  */
 
-import multer from 'multer'
 import sharp from 'sharp'
 import { nanoid } from 'nanoid'
 import { query } from '../database/index.js'
-import { promises as fs } from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: async (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '../../uploads', req.params.type || 'misc')
-    await fs.mkdir(uploadDir, { recursive: true })
-    cb(null, uploadDir)
-  },
-  filename: (req, file, cb) => {
-    const uniqueId = nanoid()
-    const ext = path.extname(file.originalname)
-    cb(null, `${uniqueId}${ext}`)
-  }
-})
-
-const upload = multer({
-  storage,
-  limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB max
-  },
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = {
-      sprite: /\.(png|jpg|jpeg|gif)$/i,
-      audio: /\.(mp3|ogg|wav)$/i,
-      tileset: /\.(png|jpg|jpeg)$/i
-    }
-    
-    const type = req.params.type || 'sprite'
-    if (allowedTypes[type] && allowedTypes[type].test(file.originalname)) {
-      cb(null, true)
-    } else {
-      cb(new Error(`Invalid file type for ${type}`))
-    }
-  }
-})
+import { uploadFile, deleteFile, getPublicUrl, listObjects } from '../utils/minio.js'
+import { Readable } from 'stream'
 
 export async function assetRoutes(fastify, options) {
   // Upload asset
@@ -71,23 +30,35 @@ export async function assetRoutes(fastify, options) {
     const file = request.uploadedFile
 
     try {
+      // Validate file type
+      const allowedTypes = {
+        sprite: /\.(png|jpg|jpeg|gif)$/i,
+        audio: /\.(mp3|ogg|wav)$/i,
+        tileset: /\.(png|jpg|jpeg)$/i
+      }
+      
+      if (!allowedTypes[type] || !allowedTypes[type].test(file.filename)) {
+        return reply.code(400).send({ error: `Invalid file type for ${type}` })
+      }
+
       // Generate unique filename
       const uniqueId = nanoid()
-      const ext = path.extname(file.filename)
+      const ext = file.filename.match(/\.[^.]+$/)?.[0] || '.png'
       const filename = `${uniqueId}${ext}`
-      const uploadDir = path.join(__dirname, '../../uploads', type)
-      const filepath = path.join(uploadDir, filename)
+      const objectName = `${type}/${filename}`
       
-      // Ensure upload directory exists
-      await fs.mkdir(uploadDir, { recursive: true })
-      
-      // Save file
+      // Get file buffer
       const buffer = await file.toBuffer()
-      await fs.writeFile(filepath, buffer)
       
-      // Get file info
-      const stats = await fs.stat(filepath)
-      const url = `/uploads/${type}/${filename}`
+      // Upload to MinIO
+      await uploadFile(objectName, buffer, buffer.length, {
+        'Content-Type': file.mimetype,
+        'x-amz-meta-original-name': file.filename,
+        'x-amz-meta-owner-id': request.user.userId.toString()
+      })
+      
+      // Get public URL
+      const url = getPublicUrl(objectName)
       
       // Process images to get dimensions
       let width = null
@@ -95,16 +66,22 @@ export async function assetRoutes(fastify, options) {
       
       if (type === 'sprite' || type === 'tileset') {
         try {
-          const metadata = await sharp(filepath).metadata()
+          const metadata = await sharp(buffer).metadata()
           width = metadata.width
           height = metadata.height
           
           // Create thumbnail for sprites
           if (type === 'sprite') {
-            const thumbnailPath = path.join(uploadDir, `thumb_${filename}`)
-            await sharp(filepath)
+            const thumbnailBuffer = await sharp(buffer)
               .resize(128, 128, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
-              .toFile(thumbnailPath)
+              .png()
+              .toBuffer()
+            
+            const thumbObjectName = `${type}/thumb_${filename}`
+            await uploadFile(thumbObjectName, thumbnailBuffer, thumbnailBuffer.length, {
+              'Content-Type': 'image/png',
+              'x-amz-meta-is-thumbnail': 'true'
+            })
           }
         } catch (err) {
           console.error('Error processing image:', err)
@@ -121,7 +98,7 @@ export async function assetRoutes(fastify, options) {
           name || file.filename,
           type,
           url,
-          stats.size,
+          buffer.length,
           file.mimetype,
           width,
           height,
@@ -218,7 +195,7 @@ export async function assetRoutes(fastify, options) {
     try {
       // Get asset info
       const assetResult = await query(
-        'SELECT url, owner_id FROM assets WHERE id = $1',
+        'SELECT url, owner_id, type FROM assets WHERE id = $1',
         [assetId]
       )
       
@@ -236,18 +213,22 @@ export async function assetRoutes(fastify, options) {
       // Delete from database
       await query('DELETE FROM assets WHERE id = $1', [assetId])
       
-      // Delete file from disk
+      // Delete from MinIO
       try {
-        const filepath = path.join(__dirname, '../..', asset.url)
-        await fs.unlink(filepath)
+        // Extract object name from URL
+        const urlParts = asset.url.split('/')
+        const objectName = urlParts.slice(-2).join('/')
+        
+        await deleteFile(objectName)
         
         // Also try to delete thumbnail if it exists
-        const dir = path.dirname(filepath)
-        const filename = path.basename(filepath)
-        const thumbPath = path.join(dir, `thumb_${filename}`)
-        await fs.unlink(thumbPath).catch(() => {}) // Ignore if doesn't exist
+        if (asset.type === 'sprite') {
+          const filename = urlParts[urlParts.length - 1]
+          const thumbObjectName = `${asset.type}/thumb_${filename}`
+          await deleteFile(thumbObjectName).catch(() => {}) // Ignore if doesn't exist
+        }
       } catch (err) {
-        console.error('Error deleting file:', err)
+        console.error('Error deleting file from MinIO:', err)
       }
       
       return { success: true, message: 'Asset deleted' }
@@ -275,11 +256,9 @@ export async function assetRoutes(fastify, options) {
       
       // Create a simple colored square with sharp
       const filename = `ai_${nanoid()}.png`
-      const filepath = path.join(__dirname, '../../uploads/sprite', filename)
+      const objectName = `sprite/${filename}`
       
-      await fs.mkdir(path.dirname(filepath), { recursive: true })
-      
-      await sharp({
+      const buffer = await sharp({
         create: {
           width,
           height,
@@ -288,7 +267,16 @@ export async function assetRoutes(fastify, options) {
         }
       })
       .png()
-      .toFile(filepath)
+      .toBuffer()
+      
+      // Upload to MinIO
+      await uploadFile(objectName, buffer, buffer.length, {
+        'Content-Type': 'image/png',
+        'x-amz-meta-generated': 'true',
+        'x-amz-meta-prompt': prompt
+      })
+      
+      const url = getPublicUrl(objectName)
       
       // Save to database
       const result = await query(
@@ -298,8 +286,8 @@ export async function assetRoutes(fastify, options) {
         [
           `AI: ${prompt.slice(0, 50)}`,
           'sprite',
-          `/uploads/sprite/${filename}`,
-          1024, // Approximate
+          url,
+          buffer.length,
           width,
           height,
           request.user.userId,

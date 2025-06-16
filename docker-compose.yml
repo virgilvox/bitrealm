@@ -13,10 +13,18 @@ services:
       - REDIS_URL=redis://redis:6379
       - JWT_SECRET=your-super-secret-jwt-key-change-this
       - UPLOAD_SECRET=your-upload-secret-change-this
+      - MINIO_ENDPOINT=minio
+      - MINIO_PORT=9000
+      - MINIO_USE_SSL=false
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin123
+      - MINIO_BUCKET_NAME=bitrealm-assets
     depends_on:
       postgres:
         condition: service_healthy
       redis:
+        condition: service_started
+      minio:
         condition: service_started
     volumes:
       - ./uploads:/app/uploads
@@ -54,6 +62,27 @@ services:
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
+    restart: unless-stopped
+    networks:
+      - bitrealm-network
+
+  # MinIO for S3-compatible asset storage
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
     restart: unless-stopped
     networks:
       - bitrealm-network
@@ -135,6 +164,7 @@ volumes:
   redis_data:
   prometheus_data:
   grafana_data:
+  minio_data:
 
 networks:
   bitrealm-network:
