@@ -17,6 +17,7 @@ import { EditorRoom } from './rooms/EditorRoom.js'
 import { apiRoutes } from './api/index.js'
 import { authRoutes, registerAuthMiddleware } from './api/auth.js'
 import { assetRoutes } from './api/assets.js'
+import { assetPackRoutes } from './api/assetPacks.js'
 import { projectRoutes } from './api/projects.js'
 
 // Import database
@@ -82,6 +83,7 @@ async function bootstrap() {
   // API routes
   await fastify.register(authRoutes, { prefix: '/api/auth' })
   await fastify.register(assetRoutes, { prefix: '/api/assets' })
+  await fastify.register(assetPackRoutes, { prefix: '/api/assets' })
   await fastify.register(projectRoutes, { prefix: '/api/projects' })
   await fastify.register(apiRoutes, { prefix: '/api' })
 

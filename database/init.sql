@@ -56,7 +56,10 @@ CREATE TABLE IF NOT EXISTS assets (
   attribution TEXT,
   tags TEXT[] DEFAULT '{}',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  metadata JSONB DEFAULT '{}'
+  metadata JSONB DEFAULT '{}',
+  pack_id INTEGER REFERENCES asset_packs(id) ON DELETE SET NULL,
+  animation_data JSONB,
+  layer_type VARCHAR(50)
 );
 
 -- Project collaborators table
@@ -124,6 +127,74 @@ CREATE TABLE IF NOT EXISTS plugin_storage (
   UNIQUE(plugin_name, key)
 );
 
+-- Asset packs/sets
+CREATE TABLE IF NOT EXISTS asset_packs (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    author VARCHAR(255),
+    version VARCHAR(50) DEFAULT '1.0.0',
+    is_default BOOLEAN DEFAULT FALSE,
+    is_public BOOLEAN DEFAULT TRUE,
+    thumbnail_url TEXT,
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Project asset pack selections
+CREATE TABLE IF NOT EXISTS project_asset_packs (
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    pack_id INTEGER REFERENCES asset_packs(id) ON DELETE CASCADE,
+    priority INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (project_id, pack_id)
+);
+
+-- Character customization layers
+CREATE TABLE IF NOT EXISTS character_layers (
+    id SERIAL PRIMARY KEY,
+    character_id UUID REFERENCES characters(id) ON DELETE CASCADE,
+    layer_type VARCHAR(50) NOT NULL,
+    asset_id UUID REFERENCES assets(id),
+    layer_order INTEGER DEFAULT 0,
+    tint_color VARCHAR(7),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Characters table (if not exists)
+CREATE TABLE IF NOT EXISTS characters (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    name VARCHAR(100) NOT NULL,
+    level INTEGER DEFAULT 1,
+    experience INTEGER DEFAULT 0,
+    health INTEGER DEFAULT 100,
+    max_health INTEGER DEFAULT 100,
+    mana INTEGER DEFAULT 50,
+    max_mana INTEGER DEFAULT 50,
+    position_x INTEGER DEFAULT 0,
+    position_y INTEGER DEFAULT 0,
+    map_id VARCHAR(100),
+    sprite_data JSONB DEFAULT '{}',
+    stats JSONB DEFAULT '{}',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Inventory table (if not exists)
+CREATE TABLE IF NOT EXISTS inventory (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    character_id UUID REFERENCES characters(id) ON DELETE CASCADE,
+    item_id VARCHAR(100) NOT NULL,
+    quantity INTEGER DEFAULT 1,
+    slot INTEGER,
+    equipped BOOLEAN DEFAULT FALSE,
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
@@ -139,6 +210,12 @@ CREATE INDEX IF NOT EXISTS idx_collaborators_user ON project_collaborators(user_
 CREATE INDEX IF NOT EXISTS idx_sessions_project ON game_sessions(project_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_user ON game_sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_world_saves_project_user ON world_saves(project_id, user_id);
+CREATE INDEX IF NOT EXISTS idx_assets_pack_id ON assets(pack_id);
+CREATE INDEX IF NOT EXISTS idx_project_asset_packs_project ON project_asset_packs(project_id);
+CREATE INDEX IF NOT EXISTS idx_character_layers_character ON character_layers(character_id);
+CREATE INDEX IF NOT EXISTS idx_characters_user ON characters(user_id);
+CREATE INDEX IF NOT EXISTS idx_characters_project ON characters(project_id);
+CREATE INDEX IF NOT EXISTS idx_inventory_character ON inventory(character_id);
 
 -- Updated at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -201,6 +278,13 @@ INSERT INTO projects (id, name, description, slug, owner_id, is_public, is_publi
     }]
   }'::jsonb)
 ON CONFLICT (slug) DO NOTHING;
+
+-- Insert default asset packs
+INSERT INTO asset_packs (name, description, author, is_default) VALUES
+('Default Sprites', 'Basic placeholder sprites for getting started', 'Bitrealm', true),
+('LPC Character Sprites', 'Liberated Pixel Cup animated character sprites', 'LPC Contributors', true),
+('DawnLike Tileset', 'Complete 16x16 roguelike tileset', 'DragonDePlatino', true)
+ON CONFLICT DO NOTHING;
 
 -- Grant permissions (adjust as needed for your setup)
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO bitrealm;
