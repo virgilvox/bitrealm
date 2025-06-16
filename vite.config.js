@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
+  plugins: [vue()],
   root: 'client',
   publicDir: '../public',
   build: {
@@ -27,6 +29,6 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    include: ['pixi.js', 'howler']
+    include: ['vue', 'pinia', 'pixi.js', 'howler', 'colyseus.js']
   }
 })
