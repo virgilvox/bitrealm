@@ -1,4 +1,4 @@
-# **Mythweaver**
+# **Bitrealm**
 
 *formerly “PixelForge” – name updated*
 **Browser-native, plugin-ready, open-source MMORPG builder**
@@ -288,4 +288,4 @@ erDiagram
 
 ---
 
-**Mythweaver** is now fully specced—ready for Cursor, Claude, or your favourite code genie to scaffold the repo and start shipping. Happy world-building!
+**Bitrealm** is now fully specced—ready for Cursor, Claude, or your favourite code genie to scaffold the repo and start shipping. Happy world-building!

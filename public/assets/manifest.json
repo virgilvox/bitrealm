@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0",
+  "description": "Default placeholder assets for Bitrealm",
+  "license": "CC0",
+  "categories": {
+    "sprites": [
+      "hero-male.png",
+      "hero-female.png",
+      "npc-merchant.png",
+      "enemy-slime.png",
+      "enemy-skeleton.png"
+    ],
+    "tilesets": [
+      "grass-tileset.png",
+      "dungeon-tileset.png",
+      "village-tileset.png"
+    ],
+    "items": [
+      "sword-basic.png",
+      "potion-health.png",
+      "potion-mana.png",
+      "coin-gold.png",
+      "chest-closed.png"
+    ],
+    "ui": [
+      "button-normal.png",
+      "button-hover.png",
+      "panel-wood.png",
+      "healthbar-bg.png",
+      "healthbar-fill.png"
+    ]
+  }
+}

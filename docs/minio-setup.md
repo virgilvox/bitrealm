@@ -1,8 +1,8 @@
-# MinIO Setup for Mythweaver (Bitrealm)
+# MinIO Setup for Bitrealm
 
 ## Overview
 
-Mythweaver uses MinIO as an S3-compatible object storage solution for managing game assets like sprites, tilesets, and audio files. This provides scalable, cloud-ready storage that can easily migrate to AWS S3, Google Cloud Storage, or other S3-compatible services.
+Bitrealm uses MinIO as an S3-compatible object storage solution for managing game assets like sprites, tilesets, and audio files. This provides scalable, cloud-ready storage that can easily migrate to AWS S3, Google Cloud Storage, or other S3-compatible services.
 
 ## Local Development Setup
 
