@@ -42,61 +42,117 @@ Browser Clients ──WebSocket──▶ NGINX (HTTP/WS)
 
 ### Technology Stack
 
-- **Backend**: Fastify, Colyseus, tRPC, PostgreSQL, Redis
-- **Frontend**: Vanilla JavaScript, PixiJS, CSS3
-- **Real-time**: WebSocket, Colyseus state synchronization
-- **Deployment**: Docker, NGINX, Kubernetes/Fly.io scaling
+- **Frontend**: Vue 3, Pinia, PixiJS 8 (Canvas/WebGL rendering)
+- **Backend**: Node.js, Fastify, Colyseus
+- **Database**: PostgreSQL, Redis
+- **Real-time**: WebSocket via Colyseus
+- **Deployment**: Docker, Docker Compose, NGINX
 
 ## Quick Start
 
 ### Prerequisites
 
-- Node.js 16+ 
-- PostgreSQL 12+
-- Redis 6+
-- Docker (optional)
+- Docker & Docker Compose (recommended)
+- OR Node.js 16+ and PostgreSQL 12+ & Redis 6+ (for local development)
 
-### Installation
+### Docker Setup (Recommended)
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/bitrealm/bitrealm.git
+   cd bitrealm
+   ```
+
+2. **Copy environment configuration**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your settings
+   ```
+
+3. **Build and run with Docker Compose**
+   ```bash
+   # Build frontend assets first
+   docker run --rm -v $(pwd):/app -w /app node:18-alpine sh -c "npm install && npm run build"
+   
+   # Start all services
+   docker-compose up -d
+   ```
+
+4. **Access the application**
+   - Main app: http://localhost
+   - API: http://localhost:3001
+   - Editor: http://localhost/editor/
+
+5. **View logs**
+   ```bash
+   docker-compose logs -f app
+   ```
+
+### Local Development Setup
+
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Set up PostgreSQL and Redis**
+   ```bash
+   # Create database
+   createdb bitrealm
+   
+   # Run database migrations
+   psql bitrealm < database/init.sql
+   
+   # Start Redis
+   redis-server
+   ```
+
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your database credentials
+   ```
+
+4. **Start development servers**
+   ```bash
+   # Terminal 1: Start backend
+   npm run server:dev
+   
+   # Terminal 2: Start frontend
+   npm run client:dev
+   ```
+
+5. **Access the application**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:3001
+   - Editor: http://localhost:3000/editor/
+   - Colyseus Monitor: http://localhost:3001/monitor
+
+### Docker Commands
 
 ```bash
-git clone https://github.com/bitrealm/bitrealm.git
-cd bitrealm
-
-# Install dependencies
-npm install
-
-# Set up environment
-cp .env.example .env
-# Edit .env with your database and Redis settings
-
-# Initialize database
-npm run db:init
-
-# Start development servers
-npm run dev
-```
-
-This starts:
-- Frontend dev server: http://localhost:3000
-- Backend API: http://localhost:3001
-- Colyseus monitor: http://localhost:3001/monitor
-
-### Docker Setup
-
-```bash
-# Quick start with Docker Compose
+# Start services
 docker-compose up -d
 
-# Or build custom image
-docker build -t bitrealm .
-docker run -p 3000:3000 -p 3001:3001 bitrealm
+# Stop services
+docker-compose down
+
+# View logs
+docker-compose logs -f [service-name]
+
+# Rebuild after changes
+docker-compose build
+docker-compose up -d
+
+# Clean everything
+docker-compose down -v
 ```
 
 ## Development Workflow
 
 ### Creating Your First World
 
-1. **Open Editor**: Navigate to http://localhost:3000/editor/
+1. **Open Editor**: Navigate to http://localhost/editor/
 2. **Map Design**: Use the tile editor to create terrain and objects
 3. **Add Characters**: Place NPCs and define their behaviors
 4. **Script Logic**: Write DSL scripts for quests, events, and interactions
@@ -155,32 +211,70 @@ export function registerPlugin(forge) {
 }
 ```
 
+## Production Deployment
+
+### Using Docker Compose (Production)
+
+1. **Update environment variables**
+   ```bash
+   cp .env.example .env.production
+   # Set NODE_ENV=production
+   # Set secure JWT_SECRET and other secrets
+   ```
+
+2. **Build and deploy**
+   ```bash
+   # Build frontend
+   npm run build
+   
+   # Deploy with production profile
+   docker-compose --env-file .env.production up -d
+   ```
+
+3. **Enable NGINX SSL** (uncomment in nginx.conf)
+   ```bash
+   # Place certificates in nginx/ssl/
+   # Update server_name in nginx.conf
+   docker-compose restart nginx
+   ```
+
+### Environment Variables
+
+Key environment variables for production:
+
+```bash
+NODE_ENV=production
+DATABASE_URL=postgresql://user:pass@postgres:5432/bitrealm
+REDIS_URL=redis://redis:6379
+JWT_SECRET=your-very-secure-secret-key
+CORS_ORIGIN=https://yourdomain.com
+```
+
 ## Project Structure
 
 ```
 bitrealm/
-├── server/                 # Backend services
-│   ├── index.js           # Main Fastify server
-│   ├── rooms/             # Colyseus room handlers
-│   │   ├── GameRoom.js    # Gameplay logic
-│   │   └── EditorRoom.js  # Collaborative editing
-│   ├── dsl/               # Domain Specific Language
-│   │   ├── parser.js      # DSL parser
-│   │   └── interpreter.js # DSL execution engine
-│   ├── schemas/           # Colyseus state schemas
-│   ├── api/               # REST API routes
-│   └── database/          # Database models
-├── client/                # Frontend application
-│   ├── index.html         # Landing page
-│   ├── editor/            # Map editor interface
-│   ├── js/                # Client-side logic
-│   └── styles/            # CSS stylesheets
-├── plugins/               # Plugin system
-├── public/                # Static assets
-│   ├── sprites/           # Game sprites
-│   ├── audio/             # Sound effects
-│   └── tilesets/          # Tile graphics
-└── docker-compose.yml     # Container orchestration
+├── client/                # Vue 3 frontend application
+│   ├── index.html        # Main entry
+│   ├── editor/           # Map editor app
+│   ├── components/       # Vue components
+│   ├── stores/           # Pinia stores
+│   └── styles/           # CSS files
+├── server/               # Backend services
+│   ├── index.js          # Main server entry
+│   ├── rooms/            # Colyseus game rooms
+│   ├── dsl/              # DSL parser/interpreter
+│   ├── api/              # REST API routes
+│   ├── database/         # Database utilities
+│   └── plugins/          # Plugin system
+├── database/             # Database scripts
+│   └── init.sql          # Schema initialization
+├── plugins/              # Community plugins
+├── public/               # Static assets
+├── nginx/                # NGINX configuration
+├── docker-compose.yml    # Container orchestration
+├── Dockerfile            # App container definition
+└── package.json          # Dependencies
 ```
 
 ## Features & Roadmap
@@ -236,6 +330,28 @@ This project includes assets from generous open-source contributors:
 - **m5x7** by Daniel Linssen
   - License: Custom (free for personal and commercial use)
   - Source: https://managore.itch.io/m5x7
+
+## Troubleshooting
+
+### Common Issues
+
+**Database connection errors**
+- Ensure PostgreSQL is running
+- Check DATABASE_URL in .env
+- Verify database exists: `psql -l`
+
+**Redis connection errors**
+- Ensure Redis is running: `redis-cli ping`
+- Check REDIS_URL in .env
+
+**Docker issues**
+- Clear volumes: `docker-compose down -v`
+- Rebuild: `docker-compose build --no-cache`
+- Check logs: `docker-compose logs [service]`
+
+**Port conflicts**
+- Change ports in docker-compose.yml
+- Or stop conflicting services
 
 ## Contributing
 

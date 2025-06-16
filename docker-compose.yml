@@ -22,6 +22,8 @@ services:
       - ./uploads:/app/uploads
       - ./logs:/app/logs
     restart: unless-stopped
+    networks:
+      - bitrealm-network
 
   # PostgreSQL database
   postgres:
@@ -41,6 +43,8 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
+    networks:
+      - bitrealm-network
 
   # Redis for caching and sessions
   redis:
@@ -51,8 +55,10 @@ services:
       - redis_data:/data
     command: redis-server --appendonly yes
     restart: unless-stopped
+    networks:
+      - bitrealm-network
 
-  # NGINX reverse proxy (production)
+  # NGINX reverse proxy (for development - remove ports in production)
   nginx:
     image: nginx:alpine
     ports:
@@ -61,12 +67,31 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./dist:/usr/share/nginx/html:ro
       - ./uploads:/usr/share/nginx/html/uploads:ro
     depends_on:
       - app
     restart: unless-stopped
+    networks:
+      - bitrealm-network
+
+  # Development services
+  # Vite dev server (development only)
+  vite:
+    image: node:18-alpine
+    working_dir: /app
+    command: npm run client:dev -- --host
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
     profiles:
-      - production
+      - development
+    networks:
+      - bitrealm-network
 
   # Monitoring with Prometheus (optional)
   prometheus:
@@ -84,12 +109,14 @@ services:
     restart: unless-stopped
     profiles:
       - monitoring
+    networks:
+      - bitrealm-network
 
   # Grafana for dashboards (optional)
   grafana:
     image: grafana/grafana:latest
     ports:
-      - "3001:3000"
+      - "3003:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
@@ -100,6 +127,8 @@ services:
     restart: unless-stopped
     profiles:
       - monitoring
+    networks:
+      - bitrealm-network
 
 volumes:
   postgres_data:
@@ -108,5 +137,5 @@ volumes:
   grafana_data:
 
 networks:
-  default:
-    name: bitrealm-network
+  bitrealm-network:
+    driver: bridge

@@ -15,7 +15,7 @@ import { EditorRoom } from './rooms/EditorRoom.js'
 
 // Import API routes  
 import { apiRoutes } from './api/index.js'
-import { authRoutes } from './api/auth.js'
+import { authRoutes, registerAuthMiddleware } from './api/auth.js'
 import { assetRoutes } from './api/assets.js'
 import { projectRoutes } from './api/projects.js'
 
@@ -37,6 +37,9 @@ async function bootstrap() {
     logger: true,
     trustProxy: true
   })
+
+  // Register authentication middleware
+  registerAuthMiddleware(fastify)
 
   // Security middleware
   await fastify.register(helmet, {
@@ -63,6 +66,13 @@ async function bootstrap() {
   await fastify.register(staticFiles, {
     root: join(__dirname, '../public'),
     prefix: '/public/'
+  })
+
+  // Serve uploaded files
+  await fastify.register(staticFiles, {
+    root: join(__dirname, '../uploads'),
+    prefix: '/uploads/',
+    decorateReply: false
   })
 
   // API routes
@@ -128,7 +138,7 @@ async function bootstrap() {
     }
 
     const room = rooms[0]
-    const roomUrl = `${request.protocol}://${request.get('host')}/join/${room.roomId}`
+    const roomUrl = `${request.protocol}://${request.hostname}/join/${room.roomId}`
     
     return reply.redirect(roomUrl)
   })
