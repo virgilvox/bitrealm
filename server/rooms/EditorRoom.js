@@ -1,21 +1,18 @@
 import { Room } from '@colyseus/core'
-import { Schema, type, MapSchema, ArraySchema } from '@colyseus/schema'
+import { Schema, MapSchema, ArraySchema, defineTypes } from '@colyseus/schema'
 
 class EditorUser extends Schema {
-  constructor() {
-    super()
-    this.id = ''
-    this.name = ''
-    this.color = '#ff0000'
-    this.cursorX = 0
-    this.cursorY = 0
-    this.selectedTool = 'select'
-    this.selectedLayer = null
-    this.isActive = true
-  }
+  id = ''
+  name = ''
+  color = '#ff0000'
+  cursorX = 0
+  cursorY = 0
+  selectedTool = 'select'
+  selectedLayer = null
+  isActive = true
 }
 
-EditorUser.defineSchema({
+defineTypes(EditorUser, {
   id: 'string',
   name: 'string',
   color: 'string',
@@ -27,18 +24,15 @@ EditorUser.defineSchema({
 })
 
 class EditorState extends Schema {
-  constructor() {
-    super()
-    this.projectId = ''
-    this.projectName = ''
-    this.users = new MapSchema()
-    this.version = 0
-    this.locked = false
-    this.lockedBy = null
-  }
+  projectId = ''
+  projectName = ''
+  users = new MapSchema()
+  version = 0
+  locked = false
+  lockedBy = null
 }
 
-EditorState.defineSchema({
+defineTypes(EditorState, {
   projectId: 'string',
   projectName: 'string',
   users: { map: EditorUser },

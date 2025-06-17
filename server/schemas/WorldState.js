@@ -1,23 +1,11 @@
-import { Schema, type, MapSchema } from '@colyseus/schema'
+import { Schema, MapSchema, defineTypes } from '@colyseus/schema'
 import { Player } from './Player.js'
 import { NPC } from './NPC.js'
 import { Item } from './Item.js'
 
-export class WorldState extends Schema {
-  constructor() {
-    super()
-    
-    this.worldId = ''
-    this.worldName = ''
-    this.players = new MapSchema()
-    this.npcs = new MapSchema()
-    this.worldItems = new MapSchema()
-    this.globalVariables = new MapSchema()
-  }
-}
+export class WorldState extends Schema {}
 
-// Define schema types
-WorldState.defineSchema({
+defineTypes(WorldState, {
   worldId: 'string',
   worldName: 'string',
   players: { map: Player },

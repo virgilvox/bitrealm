@@ -9,13 +9,24 @@ let pool = null
 export async function initDatabase() {
   try {
     // Initialize PostgreSQL
-    pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
+    const poolConfig = {
       ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
       max: 20,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
-    })
+      connectionTimeoutMillis: 2000
+    }
+
+    if (process.env.DATABASE_URL) {
+      poolConfig.connectionString = process.env.DATABASE_URL
+    } else {
+      poolConfig.host = process.env.HOST || 'localhost'
+      poolConfig.port = process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432
+      poolConfig.user = process.env.DB_USER || 'postgres'
+      poolConfig.password = process.env.DB_PASSWORD || 'postgres'
+      poolConfig.database = process.env.DB_NAME || 'bitrealm'
+    }
+
+    pool = new Pool(poolConfig)
 
     // Test database connection
     const client = await pool.connect()
@@ -40,6 +51,11 @@ let redisClient = null
 
 async function initRedis() {
   try {
+    if (!process.env.REDIS_URL) {
+      console.warn('⚠️  REDIS_URL not set – skipping Redis initialisation. Caching will be in-memory only.')
+      return
+    }
+
     redisClient = createClient({
       url: process.env.REDIS_URL
     })
@@ -51,8 +67,8 @@ async function initRedis() {
     await redisClient.connect()
     console.log('✅ Redis connected successfully')
   } catch (error) {
-    console.error('❌ Redis connection failed:', error)
-    throw error
+    console.warn('⚠️  Redis unavailable – continuing without Redis caching:', error.message)
+    redisClient = null
   }
 }
 
@@ -282,3 +298,6 @@ export async function closeDatabase() {
     console.error('❌ Error closing database connections:', error)
   }
 }
+
+// Backward compatibility export
+export { pool as pgPool }

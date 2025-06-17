@@ -64,38 +64,40 @@
     </div>
 
     <!-- Upload Dialog -->
-    <dialog v-if="showUploadDialog" @close="showUploadDialog = false">
-      <h3>Upload Asset Pack</h3>
-      <form @submit.prevent="uploadPack">
-        <div class="form-group">
-          <label>Pack Name</label>
-          <input v-model="newPack.name" required>
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <textarea v-model="newPack.description" rows="3"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Author</label>
-          <input v-model="newPack.author" required>
-        </div>
-        <div class="form-group">
-          <label>Pack ZIP File</label>
-          <input type="file" @change="handleFileSelect" accept=".zip" required>
-        </div>
-        <div class="dialog-actions">
-          <button type="button" @click="showUploadDialog = false">Cancel</button>
-          <button type="submit" :disabled="uploading">
-            {{ uploading ? 'Uploading...' : 'Upload Pack' }}
-          </button>
-        </div>
-      </form>
+    <dialog v-if="showUploadDialog" @close="showUploadDialog = false" class="upload-dialog" ref="uploadDialogEl">
+      <div class="dialog-content">
+        <h3>Upload Asset Pack</h3>
+        <form @submit.prevent="uploadPack">
+          <div class="form-group">
+            <label for="packName">Pack Name</label>
+            <input id="packName" v-model="newPack.name" required>
+          </div>
+          <div class="form-group">
+            <label for="packDesc">Description</label>
+            <textarea id="packDesc" v-model="newPack.description" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="packAuthor">Author</label>
+            <input id="packAuthor" v-model="newPack.author" required>
+          </div>
+          <div class="form-group">
+            <label for="packFile">Pack ZIP File</label>
+            <input id="packFile" type="file" @change="handleFileSelect" accept=".zip" required>
+          </div>
+          <div class="dialog-actions">
+            <button type="button" @click="closeUploadDialog" class="btn-secondary">Cancel</button>
+            <button type="submit" :disabled="uploading" class="btn-primary">
+              {{ uploading ? 'Uploading...' : 'Upload Pack' }}
+            </button>
+          </div>
+        </form>
+      </div>
     </dialog>
   </div>
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useProjectStore } from '../../stores/project'
 import draggable from 'vuedraggable'
 
@@ -110,10 +112,13 @@ export default {
     const availablePacks = ref([])
     const showUploadDialog = ref(false)
     const uploading = ref(false)
+    const uploadDialogEl = ref(null);
+
     const newPack = ref({
       name: '',
       description: '',
-      author: ''
+      author: '',
+      file: null
     })
 
     const isPackSelected = (packId) => {
@@ -223,16 +228,57 @@ export default {
     }
 
     const uploadPack = async () => {
-      // Implementation for uploading custom pack
+      if (!newPack.value.file) {
+        alert('Please select a file to upload.')
+        return
+      }
+
       uploading.value = true
       try {
-        // Upload logic here
-        console.log('Uploading pack:', newPack.value)
+        const formData = new FormData()
+        formData.append('pack', newPack.value.file)
+        formData.append('name', newPack.value.name)
+        formData.append('description', newPack.value.description)
+        formData.append('author', newPack.value.author)
+
+        const response = await fetch('/api/assets/packs/upload', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: formData
+        })
+
+        if (response.ok) {
+          alert('Asset pack uploaded successfully!')
+          closeUploadDialog()
+          await loadPacks()
+        } else {
+          const errorData = await response.json()
+          alert(`Error uploading pack: ${errorData.error}`)
+        }
+      } catch (error) {
+        console.error('Error uploading pack:', error)
+        alert('An unexpected error occurred.')
       } finally {
         uploading.value = false
-        showUploadDialog.value = false
       }
     }
+    
+    const closeUploadDialog = () => {
+      showUploadDialog.value = false
+      newPack.value = { name: '', description: '', author: '', file: null }
+    }
+    
+    watch(showUploadDialog, (newValue) => {
+      if (newValue) {
+        nextTick(() => {
+          uploadDialogEl.value?.showModal()
+        })
+      } else {
+        uploadDialogEl.value?.close()
+      }
+    });
 
     onMounted(() => {
       loadPacks()
@@ -242,6 +288,7 @@ export default {
       selectedPacks,
       availablePacks,
       showUploadDialog,
+      uploadDialogEl,
       uploading,
       newPack,
       isPackSelected,
@@ -249,7 +296,8 @@ export default {
       removePack,
       updatePackPriority,
       handleFileSelect,
-      uploadPack
+      uploadPack,
+      closeUploadDialog
     }
   }
 }
@@ -403,15 +451,20 @@ export default {
   font-size: 16px;
 }
 
-dialog {
-  padding: 20px;
-  border-radius: 8px;
+.upload-dialog {
   border: none;
+  border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  padding: 0;
   max-width: 500px;
   width: 100%;
 }
-
+.upload-dialog::backdrop {
+  background: rgba(0,0,0,0.5);
+}
+.dialog-content {
+  padding: 2rem;
+}
 .form-group {
   margin-bottom: 15px;
 }

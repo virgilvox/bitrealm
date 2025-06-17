@@ -1,0 +1,141 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sprite Sheet Configuration",
+  "description": "Schema for defining sprite sheets and their animations",
+  "type": "object",
+  "required": ["id", "name", "image", "frameSize", "animations"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the sprite sheet"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for the sprite sheet"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "default": "1.0.0"
+    },
+    "author": {
+      "type": "string",
+      "description": "Creator of the sprite sheet"
+    },
+    "license": {
+      "type": "string",
+      "description": "License type (CC0, CC-BY, etc.)"
+    },
+    "image": {
+      "type": "string",
+      "description": "Path to the sprite sheet image file"
+    },
+    "frameSize": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "enum": [16, 32, 48, 64],
+          "description": "Width of each frame in pixels"
+        },
+        "height": {
+          "type": "integer",
+          "enum": [16, 32, 48, 64],
+          "description": "Height of each frame in pixels"
+        }
+      }
+    },
+    "margin": {
+      "type": "integer",
+      "default": 0,
+      "description": "Margin around the entire sprite sheet"
+    },
+    "spacing": {
+      "type": "integer",
+      "default": 0,
+      "description": "Spacing between frames"
+    },
+    "animations": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/animation"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization"
+    },
+    "compatibility": {
+      "type": "object",
+      "properties": {
+        "lpc": {
+          "type": "boolean",
+          "description": "Compatible with LPC sprite format"
+        },
+        "rpgmaker": {
+          "type": "boolean",
+          "description": "Compatible with RPG Maker format"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "animation": {
+      "type": "object",
+      "required": ["frames", "duration"],
+      "properties": {
+        "frames": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["x", "y"],
+            "properties": {
+              "x": {
+                "type": "integer",
+                "description": "X position of frame in grid units"
+              },
+              "y": {
+                "type": "integer",
+                "description": "Y position of frame in grid units"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Override duration for this frame in milliseconds"
+              }
+            }
+          }
+        },
+        "duration": {
+          "type": "integer",
+          "default": 100,
+          "description": "Default duration per frame in milliseconds"
+        },
+        "loop": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether the animation loops"
+        },
+        "directions": {
+          "type": "object",
+          "properties": {
+            "down": { "$ref": "#/definitions/directionFrames" },
+            "left": { "$ref": "#/definitions/directionFrames" },
+            "right": { "$ref": "#/definitions/directionFrames" },
+            "up": { "$ref": "#/definitions/directionFrames" }
+          }
+        }
+      }
+    },
+    "directionFrames": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "description": "Frame index for this direction"
+      }
+    }
+  }
+} 

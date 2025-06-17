@@ -209,7 +209,11 @@ export class PixiMapEditor {
     
     // Check bounds
     if (tileX >= 0 && tileX < this.mapData.width && tileY >= 0 && tileY < this.mapData.height) {
-      this.onTileClick(tileX, tileY)
+      if (this.selectedTool === 'autotile' && this.activeAutotile) {
+        this.applyAutotile(tileX, tileY)
+      } else {
+        this.onTileClick(tileX, tileY)
+      }
     }
   }
 
@@ -440,5 +444,69 @@ export class PixiMapEditor {
       this.app.destroy(true, true)
       this.app = null
     }
+  }
+
+  /**
+   * Apply autotiling rules to a specific tile and its neighbors
+   * @param {number} x - Tile X coordinate
+   * @param {number} y - Tile Y coordinate
+   */
+  applyAutotile(x, y) {
+    const layer = this.layers.get(this.selectedLayer)
+    if (!layer) return
+
+    // Update the target tile
+    this.onTileClick(x, y, this.activeAutotile.baseTile)
+
+    // Update neighbors
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        if (dx === 0 && dy === 0) continue
+        
+        const nx = x + dx
+        const ny = y + dy
+
+        if (nx >= 0 && nx < this.mapData.width && ny >= 0 && ny < this.mapData.height) {
+          const neighborTile = this.getTileAt(this.selectedLayer, nx, ny)
+          if (neighborTile && neighborTile.autotile === this.activeAutotile.id) {
+            this.updateAutotile(nx, ny)
+          }
+        }
+      }
+    }
+    this.updateAutotile(x, y)
+  }
+
+  /**
+   * Update a single autotile based on its neighbors
+   * @param {number} x - Tile X coordinate
+   * @param {number} y - Tile Y coordinate
+   */
+  updateAutotile(x, y) {
+    const layer = this.layers.get(this.selectedLayer)
+    if (!layer) return
+
+    const tile = this.getTileAt(this.selectedLayer, x, y)
+    if (!tile || !tile.autotile) return
+
+    const autotileRules = this.getAutotileRules(tile.autotile)
+    if (!autotileRules) return
+
+    // Determine neighbors
+    const neighbors = {
+      up: this.getTileAt(this.selectedLayer, x, y - 1)?.autotile === tile.autotile,
+      down: this.getTileAt(this.selectedLayer, x, y + 1)?.autotile === tile.autotile,
+      left: this.getTileAt(this.selectedLayer, x - 1, y)?.autotile === tile.autotile,
+      right: this.getTileAt(this.selectedLayer, x + 1, y)?.autotile === tile.autotile,
+    }
+
+    // This is a simplified example. A full implementation would use a bitmask
+    // and a mapping to the 47-tile format.
+    let tileIndex = 0; // Default tile
+    if(neighbors.up && neighbors.down && neighbors.left && neighbors.right) tileIndex = 0;
+    else if(neighbors.down && neighbors.left && neighbors.right) tileIndex = 1;
+    // ... more rules here
+
+    this.onTileClick(x, y, autotileRules.baseTile + tileIndex)
   }
 }

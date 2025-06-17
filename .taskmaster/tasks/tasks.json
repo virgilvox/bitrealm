@@ -1,0 +1,237 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Define Asset Standards and JSON Schema",
+        "description": "Create comprehensive JSON schemas for sprites, tilesets, and animations to ensure consistency across all game assets",
+        "details": "Define standardized formats for:\n- Sprite sheet layouts (grid-based, LPC-compatible)\n- Animation sequences and frame data\n- Tileset organization and autotile formats\n- Asset metadata (tags, categories, compatibility)\n- Character customization layers",
+        "status": "done",
+        "priority": "high",
+        "dependencies": [],
+        "testStrategy": "Validate JSON schemas against sample assets and ensure compatibility with existing standards"
+      },
+      {
+        "id": 2,
+        "title": "Create Default Asset Packs",
+        "description": "Design and implement default sprite and tileset packs following the established standards",
+        "details": "Create:\n- Basic character sprites (16x16, 32x32, 48x48)\n- Terrain tilesets (grass, water, stone, sand)\n- Object sprites (trees, rocks, buildings)\n- UI elements and icons\n- Animation sheets for all character actions",
+        "status": "done",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Develop Character Sprite Sheets",
+            "description": "Design and create default character sprite sheets at 16x16, 32x32, and 48x48 resolutions, including all required animation frames for character actions.",
+            "dependencies": [],
+            "details": "Start by sketching character concepts based on the established style guide. Create pixel art sprites for each size, ensuring consistency in proportions and color palette. For each character, produce animation frames for all standard actions (idle, walk, run, attack, etc.). Export sprite sheets in standard formats (e.g., PNG) and organize them for easy integration.",
+            "status": "done",
+            "testStrategy": "Load sprite sheets into the engine or a test viewer to verify correct alignment, animation smoothness, and visual consistency across sizes."
+          },
+          {
+            "id": 2,
+            "title": "Create Terrain Tilesets",
+            "description": "Design and implement tilesets for basic terrain types: grass, water, stone, and sand, ensuring seamless tiling and stylistic consistency.",
+            "dependencies": [],
+            "details": "Sketch and iterate on tile concepts for each terrain type. Create 16x16 and 32x32 pixel tiles, ensuring edges and corners tile seamlessly in all directions. Include variations for visual interest (e.g., different grass patches, water edges). Export tilesets as organized image files.",
+            "status": "done",
+            "testStrategy": "Test tiles in a tilemap editor or game engine to confirm seamless tiling and visual clarity at different scales."
+          },
+          {
+            "id": 3,
+            "title": "Design Object Sprites",
+            "description": "Produce default object sprites such as trees, rocks, and buildings, matching the established art style and scale.",
+            "dependencies": [],
+            "details": "Conceptualize and sketch each object type. Create pixel art sprites at appropriate resolutions (matching terrain and character scale). Ensure objects have clear silhouettes and can be layered over terrain tiles. Export each object as a separate asset with transparent backgrounds.",
+            "status": "done",
+            "testStrategy": "Place objects on sample maps to verify scale, clarity, and compatibility with terrain and character sprites."
+          },
+          {
+            "id": 4,
+            "title": "Develop UI Elements and Icons",
+            "description": "Design and implement a set of default UI elements and icons, including buttons, health bars, inventory slots, and action icons.",
+            "dependencies": [],
+            "details": "Create wireframes for UI layouts, then design pixel art or vector UI elements and icons. Ensure readability at small sizes and maintain stylistic consistency with other assets. Export assets in appropriate formats (e.g., PNG, SVG) and organize them by function.",
+            "status": "done",
+            "testStrategy": "Integrate UI elements into a sample interface to check for clarity, usability, and visual harmony."
+          },
+          {
+            "id": 5,
+            "title": "Assemble and Document Asset Packs",
+            "description": "Organize all created assets into structured packs, write documentation on usage and standards, and prepare assets for integration or distribution.",
+            "dependencies": [],
+            "details": "Group assets by type (characters, tilesets, objects, UI) in clearly named folders. Write a README or documentation file describing asset usage, naming conventions, and integration guidelines. Ensure all files are optimized for size and compatibility. Package the asset packs for easy import into the target engine or tool.",
+            "status": "done",
+            "testStrategy": "Verify that all assets are present, documentation is clear, and packs can be imported without issues into a sample project."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Implement Asset Loading System",
+        "description": "Build the system to load and manage sprites and tilesets based on JSON configuration",
+        "details": "Implement:\n- JSON parser for asset configurations\n- Sprite sheet loader with automatic slicing\n- Animation system based on JSON frame data\n- Tileset manager with autotile support\n- Asset caching and optimization",
+        "status": "done",
+        "priority": "high",
+        "dependencies": [
+          1
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Fix Colyseus Schema Issues",
+        "description": "Resolve the current schema definition errors in the Colyseus implementation",
+        "details": "Fix:\n- Update schema definitions to match Colyseus API\n- Ensure proper schema inheritance\n- Test multiplayer synchronization\n- Update Player, Item, NPC, and WorldState schemas",
+        "status": "done",
+        "priority": "critical",
+        "dependencies": []
+      },
+      {
+        "id": 5,
+        "title": "Create Asset Validation System",
+        "description": "Build tools to validate uploaded assets against standards",
+        "details": "Implement:\n- File format validation (PNG, dimensions)\n- Grid alignment checking\n- Animation frame validation\n- Metadata completeness checks\n- Compatibility warnings",
+        "status": "done",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          3
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Design Asset Configuration UI",
+        "description": "Create user interface for managing asset configurations",
+        "details": "Build:\n- Asset pack selector component\n- Sprite preview with animation playback\n- JSON editor with validation\n- Asset tagging interface\n- Import/export functionality",
+        "status": "done",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Implement MinIO Asset Storage",
+        "description": "Set up MinIO for storing and serving user-uploaded assets",
+        "details": "Configure:\n- MinIO bucket structure\n- Asset upload endpoints\n- CDN-style asset serving\n- Thumbnail generation\n- Access control policies",
+        "status": "done",
+        "priority": "high",
+        "dependencies": [],
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Provision and Configure MinIO Cluster",
+            "description": "Set up and configure a MinIO cluster for asset storage, ensuring high availability and scalability.",
+            "dependencies": [],
+            "details": "Install MinIO on the target infrastructure, configure access and secret keys, and initialize the cluster according to best practices for distributed storage.\n<info added on 2025-06-16T16:28:17.514Z>\nUpdate: Initial exploration of the current asset storage system revealed that MinIO is already integrated with basic upload/download utilities and a single-bucket structure, but lacks project-based organization, schema validation, and runtime asset checks. The next step is to design and implement a project-based bucket structure in MinIO, aligning with best practices for object storage organization. This will involve creating separate buckets for each project or using project-specific prefixes within buckets to logically separate assets, ensuring scalability and easier access control. The implementation should leverage MinIO's support for nested prefixes and bucket-level management, as well as consider enabling versioning and appropriate retention policies for asset management.\n</info added on 2025-06-16T16:28:17.514Z>\n<info added on 2025-06-16T16:30:08.672Z>\nImplementation progress:\n- Enhanced MinIO utilities to support project-based organization, introducing dual bucket support for private (bitrealm-assets) and public (bitrealm-public) assets.\n- Implemented hierarchical object paths using the format projects/{projectId}/{assetType}/{filename} to ensure logical separation and scalability.\n- Added CDN support with appropriate cache headers for optimized asset delivery.\n- Maintained backward compatibility with deprecated warnings for legacy integrations.\n- Configured lifecycle rules for temporary uploads to automate cleanup.\n- Developed helper functions for asset copying and thumbnail generation.\n\nKey features implemented:\n1. getBucketName() determines the appropriate bucket based on asset visibility.\n2. getObjectPath() constructs organized, hierarchical object paths.\n3. uploadProjectAsset() handles uploads within the project context.\n4. getProjectAssetUrl() generates asset URLs with CDN integration.\n5. listProjectAssets() provides paginated asset listings.\n\nNext step: Update server/index.js to invoke initializeBuckets() during startup to ensure all required buckets are created and configured.\n</info added on 2025-06-16T16:30:08.672Z>",
+            "status": "done",
+            "testStrategy": "Verify cluster health and connectivity by uploading and retrieving test objects using the MinIO client."
+          },
+          {
+            "id": 2,
+            "title": "Design and Implement MinIO Bucket Structure",
+            "description": "Create a logical bucket structure to organize user-submitted assets by project and asset type.",
+            "dependencies": [
+              1
+            ],
+            "details": "Define naming conventions for buckets and object keys to support project-based segregation and efficient asset retrieval.\n<info added on 2025-06-16T16:31:28.964Z>\nImplemented dual-bucket architecture with a private bucket (bitrealm-assets) for project-specific assets and a public bucket (bitrealm-public) for CDN-accessible assets. Object keys use hierarchical, prefix-based paths: project assets are stored under projects/{projectId}/{assetType}/{filename}, while default assets use defaults/{assetType}/{filename}. This approach avoids per-project bucket sprawl, supports scalability for millions of projects, and enables efficient listing and filtering. Metadata tags are added to objects for enhanced searchability, and cache headers are configured for CDN optimization. Utility functions such as getObjectPath() and getBucketName() encapsulate path and bucket logic, and all upload/download/list operations are project-aware.\n</info added on 2025-06-16T16:31:28.964Z>",
+            "status": "done",
+            "testStrategy": "Create sample buckets and objects, then validate structure and access patterns using the MinIO console and API."
+          },
+          {
+            "id": 3,
+            "title": "Develop Asset Upload Endpoints with JSON Schema Validation",
+            "description": "Implement API endpoints for asset uploads, enforcing validation against predefined JSON schemas.",
+            "dependencies": [
+              2
+            ],
+            "details": "Integrate schema validation middleware to ensure uploaded assets conform to required formats before storage in MinIO.\n<info added on 2025-06-16T16:36:40.746Z>\nImplementation of schema validation middleware is complete. An AJV-based asset validation system was created in server/utils/assetValidator.js, which loads and compiles sprite-sheet and tileset JSON schemas, extracts metadata from uploads, validates them, and provides clear error messages for any validation failures. The asset upload API now integrates this validation, verifies project ownership, supports public/private assets via an isPublic flag, uses new project-based MinIO functions, stores validated metadata in the database, and organizes thumbnails appropriately. A new GET /api/assets/project/:projectId endpoint allows fetching project assets, combining project-specific assets from MinIO with asset pack defaults, enforcing access control based on project ownership or collaboration, and supporting pagination for large collections. The validation flow ensures that uploaded files have their metadata extracted and validated against JSON schemas, returning detailed errors if validation fails and storing validated metadata for runtime use. All uploads now enforce asset standards before storage.\n</info added on 2025-06-16T16:36:40.746Z>",
+            "status": "done",
+            "testStrategy": "Submit various asset payloads (valid and invalid) and confirm correct validation and storage behavior."
+          },
+          {
+            "id": 4,
+            "title": "Implement Project-Based Access Control Policies",
+            "description": "Configure MinIO and application-level policies to enforce project-based access control for asset operations.",
+            "dependencies": [
+              2
+            ],
+            "details": "Define and apply IAM policies or bucket policies in MinIO to restrict access to assets based on user roles and project membership.",
+            "status": "done",
+            "testStrategy": "Attempt asset operations with users of different roles and projects, verifying correct access enforcement."
+          },
+          {
+            "id": 5,
+            "title": "Enable CDN-Style Asset Serving and Caching",
+            "description": "Integrate CDN or caching mechanisms to serve assets efficiently and reduce latency during game runtime.",
+            "dependencies": [
+              2
+            ],
+            "details": "Configure MinIO endpoints or proxy through a CDN, ensuring public or signed URLs are generated for asset delivery with appropriate cache headers.",
+            "status": "done",
+            "testStrategy": "Request assets via CDN endpoints and measure response times, cache hits, and content availability."
+          },
+          {
+            "id": 6,
+            "title": "Integrate Asset Loading and Thumbnail Generation for Game Runtime",
+            "description": "Ensure assets are accessible and efficiently loaded in game rooms, including on-the-fly thumbnail generation where required.",
+            "dependencies": [
+              3,
+              5
+            ],
+            "details": "Implement logic for asset retrieval and thumbnail generation, making assets available to game clients during runtime with minimal latency.\n<info added on 2025-06-16T16:39:34.314Z>\nSuccessfully implemented runtime asset loading:\n\nCreated Asset Service (server/services/assetService.js):\n1. getProjectAssets() - Loads all project assets including defaults and user uploads\n2. Combines assets from asset packs and user uploads\n3. Generates fresh URLs from MinIO with 1-hour expiry\n4. Implements in-memory caching with TTL\n5. Organizes assets by type (sprites, tilesets, audio)\n6. Falls back to default assets if none exist\n\nGameRoom Integration:\n1. Modified onCreate to accept projectId in options\n2. Calls preloadGameAssets during world loading\n3. Sends all project assets to clients in worldData packet\n4. Sets player sprite from available project assets\n5. Falls back to defaults if project assets unavailable\n\nPlayer Schema Updates:\n1. Added spriteUrl field for runtime sprite assignment\n2. Added spriteMetadata field for animation data\n\nKey Features:\n- Project-based asset isolation\n- Fresh URLs with expiry for security\n- Efficient caching to reduce MinIO calls\n- Access control verification\n- Seamless fallback to defaults\n- Support for both pack and user assets\n\nPlayers can now use their uploaded assets in-game!\n</info added on 2025-06-16T16:39:34.314Z>",
+            "status": "done",
+            "testStrategy": "Simulate game room asset loading scenarios, verifying asset availability, thumbnail correctness, and performance."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Create Asset Marketplace Schema",
+        "description": "Design database schema for asset marketplace functionality",
+        "details": "Design tables for:\n- Asset packs metadata\n- User uploads and ownership\n- Ratings and reviews\n- Categories and tags\n- Download statistics",
+        "status": "pending",
+        "priority": "low",
+        "dependencies": [
+          1
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Build Sprite Animation Editor",
+        "description": "Create visual tool for defining sprite animations",
+        "details": "Features:\n- Frame sequence editor\n- Preview with adjustable FPS\n- Hitbox/collision box editor\n- Export to JSON format\n- Import from sprite sheets",
+        "status": "done",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Implement Tileset Autotiling",
+        "description": "Add support for automatic tile selection based on neighbors",
+        "details": "Implement:\n- 47-tile autotile format support\n- Wang tile algorithm\n- Terrain transition handling\n- Custom autotile rules\n- Visual autotile editor",
+        "status": "done",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          3
+        ]
+      }
+    ],
+    "metadata": {
+      "projectName": "Bitrealm",
+      "version": "1.0.0",
+      "lastUpdated": "2024-01-15T00:00:00Z",
+      "totalTasks": 10,
+      "created": "2025-06-16T16:15:37.807Z",
+      "description": "Tasks for master context",
+      "updated": "2025-06-17T03:55:10.034Z"
+    }
+  }
+}

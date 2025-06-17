@@ -6,6 +6,7 @@ import { playground } from '@colyseus/playground'
 import cors from '@fastify/cors'
 import staticFiles from '@fastify/static'
 import helmet from 'helmet'
+import multipart from '@fastify/multipart'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { assetPackRoutes } from './api/assetPacks.js'
@@ -22,24 +23,34 @@ import { GameRoom } from './rooms/GameRoom.js'
 import { EditorRoom } from './rooms/EditorRoom.js'
 
 // Import database
-import { initDatabase } from './database/index.js'
-import { initializeBucket } from './utils/minio.js'
+import { initDatabase, query } from './database/index.js'
+import { initializeBuckets } from './utils/minio.js'
+
+// Import custom plugins
+import colyseusPlugin from './plugins/colyseus.js'
 
 // Import rate limiting
 import rateLimit from '@fastify/rate-limit'
 
+// Load environment variables from .env (only during local development)
+import 'dotenv/config'
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 4000
 const HOST = process.env.HOST || 'localhost'
 
 async function bootstrap() {
   // Initialize database
   await initDatabase()
 
-  // Initialize MinIO bucket
-  await initializeBucket()
+  // Initialize MinIO buckets (non-fatal)
+  try {
+    await initializeBuckets()
+  } catch (err) {
+    console.warn('⚠️  MinIO unavailable or misconfigured – continuing with limited functionality:', err.message)
+  }
 
   // Create Fastify instance
   const fastify = Fastify({
@@ -51,24 +62,26 @@ async function bootstrap() {
   // Register authentication middleware
   registerAuthMiddleware(fastify)
 
-  // Security middleware
-  await fastify.register(helmet, {
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'", "'unsafe-eval'"],
-        imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "ws:", "wss:"]
+  // Security middleware (skip strict CSP in development for Vite HMR)
+  if (process.env.NODE_ENV === 'production') {
+    await fastify.register(helmet, {
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'"],
+          imgSrc: ["'self'", "data:", "https:"],
+          connectSrc: ["'self'", "ws:", "wss:"]
+        }
       }
-    }
-  })
+    })
+  }
 
   // CORS
   await fastify.register(cors, {
     origin: process.env.NODE_ENV === 'production' 
       ? ['https://bitrealm.gg', /\.bitrealm\.gg$/]
-      : ['http://localhost:3000'],
+      : ['http://localhost:3000', 'http://localhost:3001', 'http://0.0.0.0:3001'],
     credentials: true
   })
 
@@ -76,6 +89,31 @@ async function bootstrap() {
   await fastify.register(staticFiles, {
     root: join(__dirname, '../public'),
     prefix: '/public/'
+  })
+
+  // Serve the main client
+  await fastify.register(staticFiles, {
+    root: join(__dirname, '../client'),
+    prefix: '/',
+    decorateReply: false
+  })
+
+  // Serve the editor app
+  await fastify.register(staticFiles, {
+    root: join(__dirname, '../client/editor'),
+    prefix: '/editor/',
+    decorateReply: false 
+  })
+
+  // Handle SPA routing for the main app
+  fastify.setNotFoundHandler((request, reply) => {
+    if (request.raw.url && request.raw.url.startsWith('/api')) {
+      return reply.code(404).send({ error: 'Not Found' })
+    }
+    if (request.raw.url && request.raw.url.startsWith('/editor')) {
+      return reply.sendFile('index.html', join(__dirname, '../client/editor'))
+    }
+    reply.sendFile('index.html', join(__dirname, '../client'))
   })
 
   // Serve uploaded files
@@ -90,6 +128,9 @@ async function bootstrap() {
     max: 100,
     timeWindow: '1 minute'
   })
+
+  // Multipart support for file uploads
+  await fastify.register(multipart)
 
   // API routes
   await fastify.register(authRoutes, { prefix: '/api/auth' })
@@ -112,8 +153,7 @@ async function bootstrap() {
 
   // Colyseus monitor (development only)
   if (process.env.NODE_ENV !== 'production') {
-    await fastify.register(monitor, { server: gameServer })
-    await fastify.register(playground, { server: gameServer })
+    await fastify.register(colyseusPlugin, { gameServer })
   }
 
   // Health check
@@ -163,6 +203,10 @@ async function bootstrap() {
 
   // Start server
   try {
+    // Test database connection
+    await query('SELECT NOW()')
+    console.log('✅ Database connected')
+
     await fastify.listen({ 
       port: PORT, 
       host: process.env.NODE_ENV === 'production' ? '0.0.0.0' : HOST 

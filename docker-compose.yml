@@ -9,7 +9,7 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV:-development}
       - PORT=${APP_PORT:-3001}
-      - HOST=${HOST:-localhost}
+      - HOST=0.0.0.0
       - DATABASE_URL=postgresql://${DB_USER:-bitrealm}:${DB_PASSWORD:-password}@postgres:${DB_PORT:-5432}/${DB_NAME:-bitrealm}
       - REDIS_URL=redis://redis:${REDIS_PORT:-6379}
       - JWT_SECRET=${JWT_SECRET:-dev-secret-key-change-in-production}
@@ -28,7 +28,7 @@ services:
       minio:
         condition: service_started
     volumes:
-      - ./uploads:/app/uploads
+      # - ./uploads:/app/uploads
       - ./logs:/app/logs
     restart: unless-stopped
     networks:
@@ -90,14 +90,15 @@ services:
 
   # NGINX reverse proxy (for development - remove ports in production)
   nginx:
-    build: ./nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
     ports:
       - "${NGINX_HTTP_PORT:-80}:80"
       - "${NGINX_HTTPS_PORT:-443}:443"
     volumes:
       - ./nginx/ssl:/etc/nginx/ssl:ro
-      - ./dist:/usr/share/nginx/html:ro
-      - ./uploads:/usr/share/nginx/html/uploads
+      # - ./uploads:/usr/share/nginx/html/uploads
     depends_on:
       - app
     restart: unless-stopped

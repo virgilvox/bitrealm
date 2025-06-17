@@ -1,0 +1,110 @@
+{
+  "id": "basic-character-32",
+  "name": "Basic Character Sprite",
+  "version": "1.0.0",
+  "author": "Bitrealm Team",
+  "license": "CC0",
+  "image": "basic-character-32.png",
+  "frameSize": {
+    "width": 32,
+    "height": 32
+  },
+  "margin": 0,
+  "spacing": 0,
+  "animations": {
+    "idle": {
+      "frames": [
+        {"x": 0, "y": 0}
+      ],
+      "duration": 1000,
+      "loop": true,
+      "directions": {
+        "down": [0],
+        "left": [12],
+        "right": [24],
+        "up": [36]
+      }
+    },
+    "walk": {
+      "frames": [
+        {"x": 0, "y": 0},
+        {"x": 1, "y": 0},
+        {"x": 2, "y": 0},
+        {"x": 1, "y": 0}
+      ],
+      "duration": 150,
+      "loop": true,
+      "directions": {
+        "down": [0, 1, 2, 1],
+        "left": [12, 13, 14, 13],
+        "right": [24, 25, 26, 25],
+        "up": [36, 37, 38, 37]
+      }
+    },
+    "run": {
+      "frames": [
+        {"x": 3, "y": 0},
+        {"x": 4, "y": 0},
+        {"x": 5, "y": 0},
+        {"x": 4, "y": 0}
+      ],
+      "duration": 100,
+      "loop": true,
+      "directions": {
+        "down": [3, 4, 5, 4],
+        "left": [15, 16, 17, 16],
+        "right": [27, 28, 29, 28],
+        "up": [39, 40, 41, 40]
+      }
+    },
+    "attack": {
+      "frames": [
+        {"x": 6, "y": 0},
+        {"x": 7, "y": 0},
+        {"x": 8, "y": 0}
+      ],
+      "duration": 100,
+      "loop": false,
+      "directions": {
+        "down": [6, 7, 8],
+        "left": [18, 19, 20],
+        "right": [30, 31, 32],
+        "up": [42, 43, 44]
+      }
+    },
+    "hurt": {
+      "frames": [
+        {"x": 9, "y": 0},
+        {"x": 10, "y": 0}
+      ],
+      "duration": 150,
+      "loop": false,
+      "directions": {
+        "down": [9, 10],
+        "left": [21, 22],
+        "right": [33, 34],
+        "up": [45, 46]
+      }
+    },
+    "death": {
+      "frames": [
+        {"x": 9, "y": 0},
+        {"x": 10, "y": 0},
+        {"x": 11, "y": 0}
+      ],
+      "duration": 200,
+      "loop": false,
+      "directions": {
+        "down": [9, 10, 11],
+        "left": [21, 22, 23],
+        "right": [33, 34, 35],
+        "up": [45, 46, 47]
+      }
+    }
+  },
+  "tags": ["character", "human", "basic", "32x32"],
+  "compatibility": {
+    "lpc": false,
+    "rpgmaker": true
+  }
+} 

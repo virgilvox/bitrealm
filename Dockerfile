@@ -32,6 +32,7 @@ COPY --from=builder --chown=bitrealm:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=bitrealm:nodejs /app/server ./server
 COPY --from=builder --chown=bitrealm:nodejs /app/dist ./dist
 COPY --from=builder --chown=bitrealm:nodejs /app/public ./public
+COPY --from=builder --chown=bitrealm:nodejs /app/assets ./assets
 COPY --from=builder --chown=bitrealm:nodejs /app/package*.json ./
 
 # Create necessary directories

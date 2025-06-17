@@ -91,3 +91,10 @@ grafana_data/
 .env.test.local
 .env.production.local
 .env.local
+
+# Added by Task Master AI
+logs
+dev-debug.log
+# Dependency directories
+.vscode
+# OS specific

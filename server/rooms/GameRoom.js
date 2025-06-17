@@ -5,6 +5,7 @@ import { WorldState } from '../schemas/WorldState.js'
 import { Player } from '../schemas/Player.js'
 import { NPC } from '../schemas/NPC.js'
 import { Item } from '../schemas/Item.js'
+import { preloadGameAssets } from '../services/assetService.js'
 
 // Spatial grid for proximity checks
 class SpatialGrid {
@@ -76,6 +77,9 @@ export class GameRoom extends Room {
     // Initialize spatial grid
     this.grid = new SpatialGrid(5000, 5000, 256); // World size and cell size
     
+    // Store project ID for asset loading
+    this.projectId = options.projectId || null
+    
     // Load world data from database
     this.loadWorld(options.worldId || 'default')
     
@@ -121,6 +125,18 @@ export class GameRoom extends Room {
       this.state.worldId = worldId
       this.state.worldName = worldData.name
 
+      // Load project assets if project ID is provided
+      if (this.projectId) {
+        try {
+          console.log(`Loading assets for project ${this.projectId}`)
+          this.projectAssets = await preloadGameAssets(this.projectId)
+          console.log(`Loaded ${Object.keys(this.projectAssets.assets).length} asset types`)
+        } catch (error) {
+          console.error('Failed to load project assets:', error)
+          this.projectAssets = null
+        }
+      }
+
       // Load NPCs
       for (const npcData of worldData.maps[0].npcs) {
         const npc = new NPC()
@@ -160,6 +176,14 @@ export class GameRoom extends Room {
     player.maxHealth = 100
     player.experience = 0
 
+    // Set player sprite from assets or use default
+    if (this.projectAssets && this.projectAssets.assets.sprites.length > 0) {
+      const defaultSprite = this.projectAssets.assets.sprites.find(s => s.name === 'Player') 
+                          || this.projectAssets.assets.sprites[0]
+      player.spriteUrl = defaultSprite.url
+      player.spriteMetadata = defaultSprite.metadata
+    }
+
     this.state.players.set(client.sessionId, player)
     this.grid.insert(player) // Add player to grid
 
@@ -169,13 +193,30 @@ export class GameRoom extends Room {
       client: client
     })
 
-    // Send initial world data to client
-    client.send('worldData', {
+    // Send initial world data to client with assets
+    const worldDataPacket = {
       maps: this.worldData.maps,
-      tilesets: this.worldData.tilesets, // Send tileset definitions
       npcs: Array.from(this.state.npcs.values()),
       items: Array.from(this.state.worldItems.values())
-    })
+    }
+
+    // Include project assets if available
+    if (this.projectAssets) {
+      worldDataPacket.assets = this.projectAssets.assets
+      worldDataPacket.tilesets = this.projectAssets.assets.tilesets
+      worldDataPacket.sprites = this.projectAssets.assets.sprites
+      worldDataPacket.audio = this.projectAssets.assets.audio
+    } else {
+      // Fallback to hardcoded defaults
+      worldDataPacket.tilesets = [{
+        id: 'default',
+        name: 'Default Tileset',
+        url: '/assets/defaults/tileset/basic-tileset.png',
+        tileSize: { width: 32, height: 32 }
+      }]
+    }
+
+    client.send('worldData', worldDataPacket)
   }
 
   onLeave(client, consented) {

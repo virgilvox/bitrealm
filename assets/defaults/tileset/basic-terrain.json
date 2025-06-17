@@ -1,0 +1,132 @@
+{
+  "id": "basic-terrain-32",
+  "name": "Basic Terrain Tileset",
+  "version": "1.0.0",
+  "author": "Bitrealm Team",
+  "license": "CC0",
+  "image": "basic-terrain-32.png",
+  "tileSize": {
+    "width": 32,
+    "height": 32
+  },
+  "margin": 0,
+  "spacing": 1,
+  "columns": 16,
+  "tiles": {
+    "0": {
+      "id": 0,
+      "type": "passable",
+      "terrain": "grass",
+      "properties": {
+        "name": "Grass",
+        "description": "Basic grass tile"
+      }
+    },
+    "1": {
+      "id": 1,
+      "type": "passable",
+      "terrain": "grass",
+      "properties": {
+        "name": "Grass Variant",
+        "description": "Grass tile with small variations"
+      }
+    },
+    "16": {
+      "id": 16,
+      "type": "water",
+      "terrain": "water",
+      "properties": {
+        "name": "Water",
+        "description": "Basic water tile",
+        "depth": 1
+      },
+      "animation": {
+        "frames": [16, 17, 18, 17],
+        "duration": 500
+      }
+    },
+    "32": {
+      "id": 32,
+      "type": "solid",
+      "terrain": "stone",
+      "properties": {
+        "name": "Stone",
+        "description": "Basic stone tile"
+      }
+    },
+    "48": {
+      "id": 48,
+      "type": "passable",
+      "terrain": "sand",
+      "properties": {
+        "name": "Sand",
+        "description": "Basic sand tile"
+      }
+    }
+  },
+  "terrains": [
+    {
+      "name": "grass",
+      "color": "#4ade80",
+      "transitions": {
+        "water": [64, 65, 66, 67],
+        "stone": [80, 81, 82, 83],
+        "sand": [96, 97, 98, 99]
+      }
+    },
+    {
+      "name": "water",
+      "color": "#3b82f6",
+      "transitions": {
+        "grass": [68, 69, 70, 71],
+        "stone": [84, 85, 86, 87],
+        "sand": [100, 101, 102, 103]
+      }
+    },
+    {
+      "name": "stone",
+      "color": "#64748b",
+      "transitions": {
+        "grass": [72, 73, 74, 75],
+        "water": [88, 89, 90, 91],
+        "sand": [104, 105, 106, 107]
+      }
+    },
+    {
+      "name": "sand",
+      "color": "#fbbf24",
+      "transitions": {
+        "grass": [76, 77, 78, 79],
+        "water": [92, 93, 94, 95],
+        "stone": [108, 109, 110, 111]
+      }
+    }
+  ],
+  "autotiles": {
+    "grass": {
+      "type": "47-tile",
+      "baseTile": 0
+    },
+    "water": {
+      "type": "47-tile",
+      "baseTile": 16
+    },
+    "stone": {
+      "type": "47-tile",
+      "baseTile": 32
+    },
+    "sand": {
+      "type": "47-tile",
+      "baseTile": 48
+    }
+  },
+  "tags": ["tileset", "terrain", "32x32", "pixel-art", "default"],
+  "metadata": {
+    "type": "tileset",
+    "category": "default",
+    "description": "Default 32x32 pixel terrain tileset with basic terrain types and transitions",
+    "tileCount": 128,
+    "terrainTypes": ["grass", "water", "stone", "sand"],
+    "features": ["autotiling", "animations", "transitions"]
+  }
+} 

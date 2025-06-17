@@ -1,49 +1,28 @@
-import { Schema, type, ArraySchema } from '@colyseus/schema'
+import { Schema, ArraySchema, defineTypes } from '@colyseus/schema'
 
-export class InventoryItem extends Schema {
-  constructor() {
-    super()
-    this.slot = 0
-    this.itemId = ''
-    this.quantity = 1
-  }
-}
+export class InventoryItem extends Schema {}
 
-// Define schema after class definition
-InventoryItem.defineSchema({
+defineTypes(InventoryItem, {
   slot: 'number',
   itemId: 'string',
   quantity: 'number'
 })
 
 export class Player extends Schema {
+  // Runtime-only properties that shouldn't be synchronised
+  variables = new Map()
+
   constructor() {
-    super()
-    
-    this.id = ''
-    this.name = ''
-    this.x = 0
-    this.y = 0
-    this.mapId = 'main'
-    this.facing = 'down'
-    this.moving = false
-    this.level = 1
-    this.health = 100
-    this.maxHealth = 100
-    this.mana = 50
-    this.maxMana = 50
-    this.experience = 0
-    this.gold = 0
-    this.inventory = new ArraySchema()
-    this.activeQuests = new ArraySchema()
-    this.completedQuests = new ArraySchema()
-    this.variables = new Map()
-    this.lastActivity = Date.now()
+    super();
+    this.inventory = new ArraySchema();
+    this.activeQuests = new ArraySchema();
+    this.completedQuests = new ArraySchema();
+    this.lastActivity = Date.now();
+    this.variables = new Map();
   }
 }
 
-// Define schema after class definition
-Player.defineSchema({
+defineTypes(Player, {
   id: 'string',
   name: 'string',
   x: 'number',
@@ -58,8 +37,10 @@ Player.defineSchema({
   maxMana: 'number',
   experience: 'number',
   gold: 'number',
-  inventory: [InventoryItem],
-  activeQuests: ['string'],
-  completedQuests: ['string'],
-  lastActivity: 'number'
+  inventory: [ InventoryItem ],
+  activeQuests: [ 'string' ],
+  completedQuests: [ 'string' ],
+  lastActivity: 'number',
+  spriteUrl: 'string',
+  spriteMetadata: 'string'
 })

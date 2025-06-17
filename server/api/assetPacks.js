@@ -5,6 +5,7 @@
 
 import { query } from '../database/index.js'
 import { nanoid } from 'nanoid'
+import { uploadProjectAsset } from '../utils/minio.js'
 
 export async function assetPackRoutes(fastify, options) {
   // Get all available asset packs
@@ -207,6 +208,47 @@ export async function assetPackRoutes(fastify, options) {
     } catch (error) {
       console.error('Error removing asset pack:', error)
       return reply.code(500).send({ error: 'Failed to remove asset pack' })
+    }
+  })
+
+  // Upload a new asset pack
+  fastify.post('/packs/upload', {
+    preHandler: [fastify.authenticate]
+  }, async (request, reply) => {
+    try {
+      const data = await request.file()
+      if (!data) {
+        return reply.code(400).send({ error: 'No file uploaded' })
+      }
+
+      const { name, description, author } = data.fields
+      const file = data.file
+      
+      // Process zip file
+      // Unzip and process assets
+      // For now, just save the pack metadata
+      const packResult = await query(
+        `INSERT INTO asset_packs (name, description, author, owner_id)
+         VALUES ($1, $2, $3, $4)
+         RETURNING id, name`,
+        [name, description, author, request.user.userId]
+      )
+      
+      const newPack = packResult.rows[0]
+      
+      // Handle file storage (e.g., save zip to MinIO)
+      const zipBuffer = await data.toBuffer()
+      const zipFilename = `packs/${newPack.id}.zip`
+      await uploadProjectAsset(null, 'packs', zipFilename, zipBuffer, zipBuffer.length, {}, true)
+
+      return {
+        success: true,
+        pack: newPack
+      }
+
+    } catch (error) {
+      console.error('Error uploading asset pack:', error)
+      return reply.code(500).send({ error: 'Failed to upload asset pack' })
     }
   })
 

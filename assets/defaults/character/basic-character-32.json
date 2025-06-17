@@ -1,0 +1,86 @@
+{
+  "id": "basic-character-32",
+  "name": "Basic Character (32x32)",
+  "version": "1.0.0",
+  "author": "Bitrealm Team",
+  "license": "CC0",
+  "image": "basic-character-32.png",
+  "frameSize": {
+    "width": 32,
+    "height": 32
+  },
+  "margin": 0,
+  "spacing": 0,
+  "animations": {
+    "idle": {
+      "frames": [
+        {"x": 0, "y": 0}
+      ],
+      "duration": 1000,
+      "loop": true,
+      "directions": {
+        "down": [0],
+        "left": [1],
+        "right": [2],
+        "up": [3]
+      }
+    },
+    "walk": {
+      "frames": [
+        {"x": 1, "y": 0},
+        {"x": 2, "y": 0},
+        {"x": 3, "y": 0},
+        {"x": 2, "y": 0}
+      ],
+      "duration": 150,
+      "loop": true,
+      "directions": {
+        "down": [4, 5, 6, 5],
+        "left": [7, 8, 9, 8],
+        "right": [10, 11, 12, 11],
+        "up": [13, 14, 15, 14]
+      }
+    },
+    "attack": {
+      "frames": [
+        {"x": 4, "y": 0},
+        {"x": 5, "y": 0},
+        {"x": 6, "y": 0}
+      ],
+      "duration": 100,
+      "loop": false,
+      "directions": {
+        "down": [16, 17, 18],
+        "left": [19, 20, 21],
+        "right": [22, 23, 24],
+        "up": [25, 26, 27]
+      }
+    },
+    "hurt": {
+      "frames": [
+        {"x": 7, "y": 0},
+        {"x": 8, "y": 0}
+      ],
+      "duration": 200,
+      "loop": false,
+      "directions": {
+        "down": [28, 29],
+        "left": [30, 31],
+        "right": [32, 33],
+        "up": [34, 35]
+      }
+    }
+  },
+  "tags": ["character", "sprite", "32x32", "pixel-art", "default"],
+  "metadata": {
+    "type": "character",
+    "category": "default",
+    "description": "Default 32x32 pixel character sprite with basic animations",
+    "frameCount": {
+      "total": 36,
+      "perDirection": 9
+    },
+    "directions": ["down", "left", "right", "up"],
+    "animations": ["idle", "walk", "attack", "hurt"]
+  }
+} 

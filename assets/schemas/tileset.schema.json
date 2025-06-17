@@ -1,0 +1,175 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tileset Configuration",
+  "description": "Schema for defining tilesets with terrain and autotile support",
+  "type": "object",
+  "required": ["id", "name", "image", "tileSize", "tiles"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the tileset"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for the tileset"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "default": "1.0.0"
+    },
+    "author": {
+      "type": "string",
+      "description": "Creator of the tileset"
+    },
+    "license": {
+      "type": "string",
+      "description": "License type (CC0, CC-BY, etc.)"
+    },
+    "image": {
+      "type": "string",
+      "description": "Path to the tileset image file"
+    },
+    "tileSize": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "enum": [16, 32, 48],
+          "description": "Width of each tile in pixels"
+        },
+        "height": {
+          "type": "integer",
+          "enum": [16, 32, 48],
+          "description": "Height of each tile in pixels"
+        }
+      }
+    },
+    "margin": {
+      "type": "integer",
+      "default": 0,
+      "description": "Margin around the tileset"
+    },
+    "spacing": {
+      "type": "integer",
+      "default": 1,
+      "description": "Spacing between tiles"
+    },
+    "columns": {
+      "type": "integer",
+      "description": "Number of columns in the tileset"
+    },
+    "tiles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/tileDefinition"
+      }
+    },
+    "terrains": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/terrain"
+      }
+    },
+    "autotiles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/autotile"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization"
+    }
+  },
+  "definitions": {
+    "tileDefinition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Local tile ID within tileset"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["solid", "passable", "platform", "water", "hazard"],
+          "default": "passable"
+        },
+        "terrain": {
+          "type": "string",
+          "description": "Terrain type this tile belongs to"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Custom properties for this tile"
+        },
+        "animation": {
+          "type": "object",
+          "properties": {
+            "frames": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "description": "Tile IDs for animation frames"
+              }
+            },
+            "duration": {
+              "type": "integer",
+              "default": 500,
+              "description": "Duration per frame in milliseconds"
+            }
+          }
+        }
+      }
+    },
+    "terrain": {
+      "type": "object",
+      "required": ["name", "color"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the terrain type"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "description": "Color representation for editor"
+        },
+        "transitions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Tile IDs for transitions to other terrains"
+          }
+        }
+      }
+    },
+    "autotile": {
+      "type": "object",
+      "required": ["type", "baseTile"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["47-tile", "wang", "blob", "custom"],
+          "description": "Autotile algorithm type"
+        },
+        "baseTile": {
+          "type": "integer",
+          "description": "Starting tile ID for autotile set"
+        },
+        "rules": {
+          "type": "object",
+          "description": "Custom autotile rules for advanced configurations"
+        }
+      }
+    }
+  }
+} 
